@@ -1,0 +1,25 @@
+{
+  "name": "go-bot",
+  "version": "1.0.0",
+  "description": "chat games to engage comunnity",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devJayGo/Go-bot.git"
+  },
+  "keywords": [
+    "gaming"
+  ],
+  "author": "joao vitor ribeiro de lima",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/devJayGo/Go-bot/issues"
+  },
+  "homepage": "https://github.com/devJayGo/Go-bot#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1"
+  }
+}
