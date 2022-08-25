@@ -1,6 +1,6 @@
 const {MessageEmbed} = require('discord.js')
-const { error_embed } = require('../utils/error-embed')
-const { insight } = require('../utils/functions')
+const { error_embed } = require('../reuse/error-embed')
+const { insight } = require('../reuse/functions')
 
 module.exports = {
     name:'ajuda',
