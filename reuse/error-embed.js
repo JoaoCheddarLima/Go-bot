@@ -1,9 +1,7 @@
-const {MessageEmbed} = require('discord.js')
-const { insight } = require('./functions')
+const { EmbedBuilder} = require('discord.js')
 
 this.error_embed = (motivo) => {
-    insight(`erro: ${motivo}`)
-    const embedtogo = new MessageEmbed()
+    const embedtogo = new EmbedBuilder()
     .setColor('#ff0000')
     .setFooter({ text: `❌ ops, ${motivo}`});
     return embedtogo

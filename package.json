@@ -1,6 +1,6 @@
 {
   "name": "go-bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "chat games to engage comunnity",
   "main": "index.js",
   "scripts": {
@@ -20,6 +20,10 @@
   },
   "homepage": "https://github.com/devJayGo/Go-bot#readme",
   "dependencies": {
+    "@discordjs/rest": "^1.1.0",
+    "@napi-rs/canvas": "^0.1.29",
+    "canvas": "^2.9.3",
+    "discord.js": "^14.3.0",
     "dotenv": "^16.0.1"
   }
 }

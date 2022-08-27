@@ -1,10 +1,13 @@
 const fs = require('fs')
 const Discord = require("discord.js");
-const { Intents } = require("discord.js");
 require('dotenv').config()
-const client = new Discord.Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS]
-});
+	const { Client, IntentsBitField } = require("discord.js");
+
+	const myIntents = new IntentsBitField();
+	myIntents.add(IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.GuildMessageReactions, IntentsBitField.Flags.MessageContent)
+	const client = new Client({ intents: myIntents });
+
+	console.table(myIntents.toArray())
 
 client.prefix = 'g!'
 client.commands = new Discord.Collection();
@@ -27,4 +30,3 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args, client));
 	}
 }
-
