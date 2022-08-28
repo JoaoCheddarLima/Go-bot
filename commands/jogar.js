@@ -1,7 +1,7 @@
 const fs = require('fs')
 const Canvas = require('@napi-rs/canvas')
 const { insight } = require('../reuse/functions')
-const { GenQuestions, QuestionEmbed, CorrectAnswer, GameOverEmbed } = require('../reuse/games/mathquestions.js')
+const { GenQuestions, QuestionEmbed, CorrectAnswer, GameOverEmbed, PauseEmbed, LevelUpEmbed } = require('../reuse/games/mathquestions.js')
 const {EmbedBuilder, AttachmentBuilder} = require('discord.js')
 const { error_embed } = require('../reuse/error-embed')
 
@@ -24,6 +24,8 @@ module.exports = {
         let pontos_userB = 0
         let points = 0
         let correct 
+        let LEVEL_UP = false
+        let LEVEL_UP_EMBED 
         let originalmsg 
         let level = 1
         let round = 1
@@ -35,44 +37,58 @@ module.exports = {
         let userB_Name = await client.users.cache.get(userB).username
         console.log(userA_Name, userB_Name)
         //MATHGAME
-            let mathGame = async () => {
+            let mathGame = async () => {  
             let newquestion = GenQuestions(level)
-            let questionmsg = await message.channel.send({content: `<@${userB}>, <@${userA}>`,embeds:[QuestionEmbed(round, newquestion.question, newquestion.level)]})
-            const filter = m => {
-                console.log(m.content)
-                console.log(newquestion.result)
-                response = Number(m.content)
-                correct = m
-                if(response === newquestion.result && (m.author.id === userA || m.author.id === userB)) return true
-                return false
-            };
-            message.channel.awaitMessages({ filter, max: 1, time: 30000, errors: ['time'] })
-            .then(collected => {
-                if(correct.author.id === userA){
-                    pontos_userA += newquestion.result
+            let game = async () => {
+                let questionmsg = await message.channel.send({content: `<@${userB}>, <@${userA}>`,embeds:[QuestionEmbed(round, newquestion.question, newquestion.level)]})
+                const filter = m => {
+                    response = Number(m.content)
+                    correct = m
+                    if(response === newquestion.result && (m.author.id === userA || m.author.id === userB)) return true
+                    return false
+                };
+                questionmsg.channel.awaitMessages({ filter, max: 1, time: 20000 + level * 10000, errors: ['time'] })
+                .then(collected => {
+                    if(correct.author.id === userA){
+                        pontos_userA += newquestion.result
+                    }
+                    if(correct.author.id === userB){
+                        pontos_userB += newquestion.result
+                    }
+                    points += newquestion.result
+                    round++
+                    message.channel.send({embeds:[CorrectAnswer(client.users.cache.get(correct.author.id).username, newquestion.result)]}).catch((err) => {return})
+                    .then(() => {
+                        if(round/10 === 1){
+                            level++
+                            LEVEL_UP = true
+                        }
+                        if(round/20 === 1){
+                            level++
+                            LEVEL_UP = true
+                        }
+                    })
+                    .then(() => mathGame())
+                }).catch(collected => {
+                    message.channel.send({embeds: [GameOverEmbed(newquestion.result,userA_Name, userB_Name, points, round, level, pontos_userA, pontos_userB)]})
+                });
+            }
+                if(round === 1){
+                    game()
                 }
-                if(correct.author.id === userB){
-                    pontos_userB += newquestion.result
+                if(round > 1){
+                    let tempo = 3000 + level * 2000
+                    let PAUSE_EMBED = await message.channel.send({embeds:[PauseEmbed(tempo)]})
+                    if(LEVEL_UP === true){
+                        await message.channel.send({embeds:[LevelUpEmbed(level)]})
+                        LEVEL_UP = false
+                    }
+                    setTimeout(() => {
+                        PAUSE_EMBED.delete().catch((err) => {})
+                        game()
+                    }, tempo)
                 }
-                points += newquestion.result
-                round++
-                if(round/10 === 1){
-                    level++
-                }
-                if(round/20 === 1){
-                    level++
-                }
-                message.channel.send({embeds:[CorrectAnswer(client.users.cache.get(correct.author.id).username, newquestion.result)]}).catch((err) => {return})
-                .then(() => mathGame())
-            }).catch(collected => {
-                message.channel.send({embeds: [GameOverEmbed(newquestion.result,userA_Name, userB_Name, points, round, level, pontos_userA, pontos_userB)]})
-            });
             }//end math game
-
-
-
-
-
 
         //challenging
         const filter = (reaction, user) => {
@@ -109,11 +125,10 @@ module.exports = {
             await firstbabe()
             if(error == true) return
             embed = new EmbedBuilder()
-                .setTitle('menu pré jogo')
-                .setDescription(`Olá <@${userB}> 👋, <@${userA}> está te convidando para jogar, clique no 👍 para aceitar o convite`)
+                .setDescription(`👋 Olá <@${userB}> 🎈\n♦ <@${userA}> está te convidando para jogar!! ♦ \n\n⭐ Clique no 👍 para jogar junto ou contra ele(a) ⭐`)
                 .setColor('#FF0000')
                 .setImage(`attachment://test.png`)
-                .setFooter({text:`Rapaziada manda um milkshake aq em casa 💔 q o bglh ta loco, cabo o café`})
+                .setFooter({text:`📌Dica: para iniciar sem passar nos menus digite g!jogar @usuario nome_do_jogo, exemplo: g!jogar @matheusFortnite matgame\n📌Para consultar os nomes dos jogos digite g!ids`})
                 try{
                 message.channel.send({content:`<@${userB}>,<@${userA}>`,embeds: [embed], files:[attachment] }).then(msg => {
                     originalmsg = msg
@@ -122,16 +137,16 @@ module.exports = {
                 const collector = msg.createReactionCollector({ filter, time: 30000 });
 
                 collector.on('collect', (reaction, user) => {
+                    let blacked = '```'
                     let it = async () => {
                     await originalmsg.reactions.removeAll()
                     await originalmsg.removeAttachments()
                     }
                     it()
                     embed = new EmbedBuilder()
-                    .setTitle('menu pré jogo')
-                    .setDescription(`<@${userA}> Escolha um jogo\n\n1️⃣ - Matematica 1v1`)
-                    .setColor('#0000FF')
-                    .setFooter({text:`Reaja aqui em baixo`})
+                    .setDescription(`🎈 <@${userA}> escolha um jogo!! 🎈 \n\n${blacked}1️⃣ - Matematica 1v1${blacked}`)
+                    .setColor('#adff2f')
+                    .setFooter({text:`📌 Reaja aqui em baixo ⬇⬇`})
                     originalmsg.edit({embeds: [embed]}).then(original => {
                         msg.react('1️⃣')
                     })
@@ -143,13 +158,18 @@ module.exports = {
                     const collector = msg.createReactionCollector({ filter, time: 30000 });
                     collector.on('collect', (reaction, user) => {
                         if(collected = '1️⃣'){
-                            originalmsg.delete().catch((err) => {message.channel.send('ops, tentei apagar uma mensagem e algo deu errado').catch((error) => {})})
-                            mathGame()
+                            let segundos = 15
+                            embed = new EmbedBuilder()
+                            .setDescription(`👾 Jogo escolhido - Matematica 1v1 👾\n\n⏰ Começa em ${segundos} segundos⏰\n\n❓ Como jogar ❓\n♦ Cada questão tem 30 segundos ⏰ de duração ✅\n♦ Caso não acertem ❌ o jogo acaba`)
+                            .setColor('#00FF00')
+                            .setFooter({text:'⭐ Dica: você pode desativar este guia rápido digitando g!guia mat e ativar novamente utilizando g!guia mat ⭐'})
+                            originalmsg.edit({embeds: [embed]})
+                            setTimeout(() => {mathGame();originalmsg.delete().catch((err)=>{})}, segundos * 1000)
                         }
                     })
                     collector.on('end', collected => {
                     });
-
+                    
 
                 });
                 collector.on('end', collected => {

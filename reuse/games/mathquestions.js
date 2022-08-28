@@ -1,5 +1,19 @@
 const { EmbedBuilder} = require('discord.js')
 
+this.LevelUpEmbed = (level) => {
+    const embedtogo = new EmbedBuilder()
+    .setColor('#FFFF00')
+    .setFooter({text: `♦ Dificuldade aumentada ✨${level - 1 } ==> ${level}✨\n⏳ Maior tempo entre questões e para respostas`,iconURL:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCp5UetIsS9fOFLOFssQKc8MQNce3ZYi1gCQ&usqp=CAU'});
+    return embedtogo
+}
+
+this.PauseEmbed = (tempo) => {
+    const embedtogo = new EmbedBuilder()
+    .setColor('#FFFF00')
+    .setFooter({text: `🎈 Pensando em uma nova questão 🎈\n - T:${tempo/1000} -`,iconURL:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCp5UetIsS9fOFLOFssQKc8MQNce3ZYi1gCQ&usqp=CAU'});
+    return embedtogo
+}
+
 this.GameOverEmbed = (result, userA, userB, points, round, level, points_player1, points_player2) => {
     const embedtogo = new EmbedBuilder()
     .setColor('#7600bc')
@@ -20,19 +34,19 @@ this.QuestionEmbed = (round, question, level) => {
     let footertext
     let chooseone = async () => {
         if(level >= 3){
-            descriptiontext =  `🔥 Questão: ${round} 🧠🧠🧠\n\n🌎 ${question}\n\n🎃 Dificuldade  ${level}`
-            footertext = 'daqui pra frente é loucura 🤪'
+            descriptiontext =  `🔥 Questão: ${round} 🧠🧠🧠\n⚙ Dificuldade  ${level} ⚙\n\n⭐ ${question} ⭐`
+            footertext = '🤪 daqui pra frente é loucurakkk 🤪\n-- 50 segundos para responder --'
             color = 'FF0000'
             return
         }
         if(level === 2){
-            descriptiontext =  `😎 Questão: ${round} 🧠🧠\n\n🌎 ${question}\n\n🎃 Dificuldade  ${level}`
-            footertext = 'eita vários numeros 🤭'
+            descriptiontext =  `😎 Questão: ${round} 🧠🧠\n⚙ Dificuldade  ${level} ⚙\n\n⭐ ${question} ⭐`
+            footertext = '🤭 eita vários numeros 🤭\n-- 40 segundos para responder --'
             color = 'FFFF00'
             return
         }
         footertext = `-- 30 segundos para responder --`
-        descriptiontext = `🧠 Questão: ${round}\n\n🌎 ${question}\n\n🎃 Dificuldade  ${level}`
+        descriptiontext = `🧠   Questão: ${round} 🧠\n⚙ Dificuldade  ${level} ⚙\n\n⭐ ${question} ⭐`
         color = '0000FF'
     }
     chooseone()
@@ -59,12 +73,12 @@ this.GenQuestions = (level) => {
     let sumAll = 0
     let difficult = level
     let numbers = []
-    while(difficult > 0){
+    
         LEVEL_SUMVALUE = MAX_SUMVALUE * level 
         numbers.push(Math.round(Math.random() * Number(LEVEL_SUMVALUE)))
         numbers.push(Math.round(Math.random() * Number(LEVEL_SUMVALUE)))
         difficult--
-    }
+
     for(let i = 0; i < numbers.length; i++){
         if(i === numbers.length - 1){
             sumAll += numbers[i]
