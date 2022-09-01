@@ -1,6 +1,6 @@
 {
   "name": "go-bot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "chat games to engage comunnity",
   "main": "index.js",
   "scripts": {
