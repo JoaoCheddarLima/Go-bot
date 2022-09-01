@@ -1,0 +1,9 @@
+{
+  "Mat": {
+    "nome": "Matematica quiz (soma)",
+    "guideText": "👾 Matematica quiz (soma) 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Irei enviar as perguntas no chat♦\n♦Os jogadores tem: 30 segundos ? para responder♦\n♦Caso nao acertem dentro do tempo o jogo encerra♦",
+    "cor": "#7600bc",
+    "playableModes": "all",
+    "shortcut": "Mat"
+  }
+}

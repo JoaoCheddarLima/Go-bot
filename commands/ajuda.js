@@ -4,7 +4,7 @@ const { insight } = require('../reuse/functions')
 const fs = require('fs')
 module.exports = {
     name:'ajuda',
-    async execute(message, input1, input2, userId, input3, input4){
+    async execute(message, input1, input2, userId){
         insight('ajuda')
         let data = JSON.parse(fs.readFileSync('package.json'))
         let version = data.version

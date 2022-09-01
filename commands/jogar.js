@@ -1,13 +1,13 @@
 const fs = require('fs')
 const Canvas = require('@napi-rs/canvas')
 const { insight } = require('../reuse/functions')
-const { GenQuestions, QuestionEmbed, CorrectAnswer, GameOverEmbed, PauseEmbed, LevelUpEmbed, InvitingEmbed, JoinEmbed } = require('../reuse/games/mathquestions.js')
+const { InvitingEmbed, JoinEmbed } = require('../reuse/games/mathquestions.js')
 const {EmbedBuilder, AttachmentBuilder} = require('discord.js')
 const { error_embed } = require('../reuse/error-embed')
 
 module.exports = {
     name:"jogar",
-    async execute(message,args, client, input1, input2, userId, input3, input4){
+    async execute(message,args, client, input1, input2, userId){
         //data collector
         insight('jogar')
         //variables
@@ -18,23 +18,23 @@ module.exports = {
             players:'',
             end:''
         }
+        let reactions = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣']
+        let games = JSON.parse(fs.readFileSync('./dataBase/games/GamesDone.json'))
+        let games_message
+        let game_choosed
+        let values = 1
+        let game_options = {}
         let error = false
         let collected
         let blacked = '```'
-        let points = 0
-        let tabela_pontos = {}
         let correct 
-        let LEVEL_UP = false
-        let originalmsg 
-        let level = 1
-        let round = 1
+        let originalmsg
         let attachment
         let embed
         let userA = userId  
         let userB 
         let userA_Name
         let userB_Name
-        let questionmsg 
         let players = []
         //switches
         try{
@@ -59,95 +59,34 @@ module.exports = {
             }
         }
         //MATHGAME
-            let mathGame = async () => {  
-                if(round === 1){
-                    console.log(players)
-                    for(key of players){
-                        tabela_pontos[`${key}`] = {
-                            username: await client.users.cache.get(key).username,
-                            points: 0
-                        }
-                    }
-                    GAME_INFO.end = tabela_pontos
-                }
-            let newquestion = GenQuestions(level)
-            let game = async () => {
-                let marcar = ''
-                for(let i = 0; i < players.length; i++){
-                    marcar = marcar + `<@${players[i]}>,`
-                }
-                questionmsg = await message.channel.send({content: `${marcar}`,embeds:[QuestionEmbed(round, newquestion.question, newquestion.level)]})
-                
-                const filter = m => {
-                    response = Number(m.content)
-                    let IS_PLAYER = false
-                    correct = m
-                    for(let i = 0; i < players.length; i++){
-                        if(players[i] === m.author.id){
-                            IS_PLAYER = true
-                            break
-                        }
-                    }
-                    if(response === newquestion.result && IS_PLAYER === true) return true
-                    return false
-                };
-
-                questionmsg.channel.awaitMessages({ filter, max: 1, time: 20000 + level * 10000, errors: ['time'] })
-                .then(collected => {
-
-                    tabela_pontos[correct.author.id].points += newquestion.result
-                    points += newquestion.result
-                    round++
-                    message.channel.send({embeds:[CorrectAnswer(client.users.cache.get(correct.author.id).username, newquestion.result)]}).catch((err) => {return})
-                    .then(() => {
-                        if(round/10 === 1){
-                            level++
-                            LEVEL_UP = true
-                        }
-                        if(round/20 === 1){
-                            level++
-                            LEVEL_UP = true
-                        }
-                    })
-                    .then(() => mathGame())
-                }).catch(collected => {
-                    message.channel.send({embeds: [GameOverEmbed(newquestion.result, points, round, level, GAME_INFO)]})
-                });
-            }
-                if(round > 1){
-                    let tempo = 3000 + level * 2000
-                    let PAUSE_EMBED = await message.channel.send({embeds:[PauseEmbed(tempo)]})
-                    if(LEVEL_UP === true){
-                        await message.channel.send({embeds:[LevelUpEmbed(level)]})
-                        LEVEL_UP = false
-                    }
-                    setTimeout(() => {
-                        PAUSE_EMBED.delete().catch((err) => {})
-                        game()
-                    }, tempo)
-                }else{
-                    game()
-                }
+            let startGame = async () => {  
+                const game = require(`../games/${game_choosed}`)
+                game(players,GAME_INFO,client,message)
             }
         //end math game
 
         //menu selecionar jogos
         let GAME_MENU = async () => {
-            collected = ''
-            let blacked = '```'
-            
             await originalmsg.reactions.removeAll()
+            collected = ''
+            for(key in games){
+                games_message = games_message + `${blacked}${reactions[values-1]} - ${games[key].nome}${blacked}\n`
+                game_options[`${values}`] = games[key].shortcut
+                values++
+            }
 
             embed = new EmbedBuilder()
-            .setDescription(`🎈 <@${GAME_INFO.caller}> escolha um jogo!! 🎈 \n\n${blacked}1️⃣ - Matematica quiz (soma)${blacked}`)
+            .setDescription(`🎈 <@${GAME_INFO.caller}> escolha um jogo!! 🎈\n\n${games_message}`)
             .setColor('#adff2f')
             .setFooter({text:`📌 Reaja aqui em baixo ⬇⬇`})
-            originalmsg.edit({embeds: [embed]}).then(original => {
-                original.react('1️⃣')
+            originalmsg.edit({embeds: [embed]}).then(async original => {
+                for(let i = 0; i < reactions.length; i++){
+                    original.react(reactions[i])
+                }
             })
 
             const filter = (reaction, user) => {
-                if(reaction.emoji.name === '1️⃣' && user.id === (GAME_INFO.caller)){
+                if(reactions.indexOf(reaction.emoji.name) !== -1 && user.id === (GAME_INFO.caller)){
                     collected = reaction.emoji.name
                     return true
                 }
@@ -155,19 +94,20 @@ module.exports = {
             };
             const collector = originalmsg.createReactionCollector({ filter, time: 30000, max:1 });
             collector.on('collect', (reaction, user) => {
-                if(collected === '1️⃣'){
+                    let getnum = reactions.indexOf(collected)+1
+                    game_choosed = game_options[getnum]
                     originalmsg.reactions.removeAll().catch(err => {})
                     let segundos = 15
+                    console.table(game_options)
                     embed = new EmbedBuilder()
-                    .setDescription(`👾 Matematica quiz (soma) 👾\n\n⏰ Começa em ${segundos} segundos⏰\n\n❓ Como jogar ❓\n♦ Irei enviar questões❓ \n♦ Cada questão tem: ⏰ 30 segundos de duração ♦\n♦ Caso não acertem ❌ o jogo acaba`)
-                    .setColor('#00FF00')
-                    .setFooter({text:'⭐ Dica: você pode desativar este guia rápido digitando g!guia mat e ativar novamente utilizando g!guia mat ⭐'})
+                    .setDescription(`${games[game_choosed].guideText}`)
+                    .setColor(`${games[game_choosed].cor}`)
+                    .setFooter({text:`⭐ Dica: você pode desativar este guia rápido digitando g!guia ${game_options[getnum]} e ativar novamente utilizando g!guia ${game_options[getnum]} ⭐`})
                     originalmsg.edit({embeds: [embed]})
                     setTimeout(() => {
-                        mathGame();
+                        startGame();
                         originalmsg.delete()
                         .catch((err)=>{})}, segundos * 1000)
-                }
             })
             collector.on('end', collected => {
             });

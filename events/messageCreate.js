@@ -9,11 +9,10 @@ module.exports = {
 
 	const input1 = args[1]
 	const input2 = args[2]
-	const input3 = args[3]
-	const input4 = args[4]
 	const userId = message.author.id
 	let type = 'message'
 	const commandName = args.shift().toLowerCase();
+	
 	if(!client.commands.has(commandName)) return;
 
 	const command = client.commands.get(commandName);
