@@ -12,12 +12,12 @@ module.exports = {
 	const userId = message.author.id
 	let type = 'message'
 	const commandName = args.shift().toLowerCase();
-	
+
 	if(!client.commands.has(commandName)) return;
 
 	const command = client.commands.get(commandName);
 		try {
-			command.execute(message,args, client, input1, input2, userId, input3, input4)
+			command.execute(message,args, client, input1, input2, userId)
 
 		} catch(err){console.log(err)}
 	},

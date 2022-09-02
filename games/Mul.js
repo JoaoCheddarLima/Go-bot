@@ -10,7 +10,7 @@ let level = 1
 let round = 1 
 
 let gameGen = async () => {    
-    let newquestion = GenQuestions(level, 'sum')
+    let newquestion = GenQuestions(level, 'mult')
 
         if(round === 1){
             for(key of players){
