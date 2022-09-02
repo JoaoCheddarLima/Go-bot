@@ -18,7 +18,7 @@ const NewGame = {
     guideText:"",
     cor:"",
     playableModes:"",
-    shorcut:""
+    shortcut:""
 }
 ////
 NewGame.nome = input.question('\nNome do jogo (para display)\nR:')
@@ -49,7 +49,7 @@ for(let i = 0; i < 3; i++){
     let nome = NewGame.nome
     shortcut = shortcut + nome[i]
 }
-NewGame.shorcut = shortcut
+NewGame.shortcut = shortcut
 ///
 text = ''
 for(let i = 0; i < playable.length; i++){    
@@ -59,10 +59,10 @@ for(let i = 0; i < playable.length; i++){
 console.log(text)
 choose = Number(input.question('Escolha qual o modo de jogo (caso seja restrito)\nR:'))
 NewGame.playableModes = playable[choose - 1]
-if(Games[NewGame.shorcut] !== undefined){
-    return console.log(`Jogo com a shortcut ${NewGame.shorcut} ja existe`)
+if(Games[NewGame.shortcut] !== undefined){
+    return console.log(`Jogo com a shortcut ${NewGame.shortcut} ja existe`)
 }
-Games[`${NewGame.shorcut}`] = NewGame
+Games[`${NewGame.shortcut}`] = NewGame
 ///
 
 fs.writeFileSync('../../dataBase/games/GamesDone.json', JSON.stringify(Games, null, 2));

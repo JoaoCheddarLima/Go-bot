@@ -1,5 +1,4 @@
 const {EmbedBuilder, AttachmentBuilder} = require('discord.js')
-const { error_embed } = require('../error-embed')
 
 this.JoinEmbed = (username) => {
     const embedtogo = new EmbedBuilder()
@@ -11,6 +10,7 @@ this.InvitingEmbed = (caller) => {
     let text = `♦ ATENÇÃO! ♦\n<@${caller}> está criando uma partida aberta`
     const embedtogo = new EmbedBuilder()
     .setColor('#FF0000')
+    .setDescription(`${text}`)
     .setFooter({text: `\n♦- Encerra em 30 segundos -♦\n⬇⬇ REAJA PARA PARTICIPAR ⬇⬇`});
     return embedtogo
 }
@@ -83,37 +83,57 @@ this.QuestionEmbed = (round, question, level) => {
     return embedtogo
 }
 
-
-
-this.GenQuestions = (level) => {
-    let MAX_SUMVALUE = 100
-    let MIN_SUMVALUE = 0
-    let LEVEL_SUMVALUE
+this.GenQuestions = (level, type) => {
     let questioninfo = {
         'question':``,
         'level':'',
         'result':'',
         'NumbersArray':''
     }
-    let questionString = ''
-    let sumAll = 0
-    let difficult = level
     let numbers = []
-    
-	while(difficult > 0){
-        LEVEL_SUMVALUE = MAX_SUMVALUE * level 
-        numbers.push(Math.round(Math.random() * Number(LEVEL_SUMVALUE)))
-        numbers.push(Math.round(Math.random() * Number(LEVEL_SUMVALUE)))
-        difficult--
-	}
-    for(let i = 0; i < numbers.length; i++){
-        if(i === numbers.length - 1){
-            sumAll += numbers[i]
-            questionString = questionString + numbers[i] + ' ? '
-            break
+    let questionString = ''
+    let sumAll = 1
+    if(type == 'mult'){
+        let MAX_SUMVALUE = 50
+        let LEVEL_SUMVALUE
+        let difficult = level
+        while(difficult >= 0){
+            LEVEL_SUMVALUE = MAX_SUMVALUE * level 
+            let RANDOM_INT = 0
+            while(RANDOM_INT < 2){
+                RANDOM_INT = Math.round(Math.random() * Number(LEVEL_SUMVALUE))
+            }
+            numbers.push(RANDOM_INT)
+            difficult--
         }
-        sumAll += numbers[i]
-        questionString = questionString + numbers[i] + ' + '
+        for(let i = 0; i < numbers.length; i++){
+            if(i === numbers.length - 1){
+                sumAll *= numbers[i]
+                questionString = questionString + numbers[i] + ' ? '
+                break
+            }
+            sumAll *= numbers[i]
+            questionString = questionString + numbers[i] + ' x '
+        }
+    }
+    if(type == 'sum'){
+        let MAX_SUMVALUE = 100
+        let LEVEL_SUMVALUE
+        let difficult = level
+        while(difficult >= 0){
+            LEVEL_SUMVALUE = MAX_SUMVALUE * level 
+            numbers.push(Math.round(Math.random() * Number(LEVEL_SUMVALUE)))
+            difficult--
+        }
+        for(let i = 0; i < numbers.length; i++){
+            if(i === numbers.length - 1){
+                sumAll += numbers[i]
+                questionString = questionString + numbers[i] + ' ? '
+                break
+            }
+            sumAll += numbers[i]
+            questionString = questionString + numbers[i] + ' + '
+        }
     }
     questioninfo.question = questionString
     questioninfo.level = level

@@ -4,7 +4,7 @@ const fs = require('fs')
 let tema = input.question('Tema?\nR:')
 
 while(true){
-    const database = JSON.parse(fs.readFileSync('./questions.json'))
+    const database = JSON.parse(fs.readFileSync('../../dataBase/games/questions.json'))
     let palavra = input.question('Palavra?\nR:')
 
 
@@ -20,5 +20,5 @@ while(true){
         console.log(`\n-> Status: Recusado\n[nova]Palavra: "${palavra}" já existem em -> Tema:${tema}, index:${database[tema].indexOf(palavra)}\n`)
         }
     }
-    fs.writeFileSync('./questions.json', JSON.stringify(database, null, 2));
+    fs.writeFileSync('../../dataBase/games/questions.json', JSON.stringify(database, null, 2));
 }

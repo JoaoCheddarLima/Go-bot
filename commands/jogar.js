@@ -15,7 +15,7 @@ module.exports = {
             caller:'',
             input1:'',
             type:'',
-            players:'',
+            players:[],
             end:''
         }
         let reactions = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣']
@@ -67,7 +67,6 @@ module.exports = {
 
         //menu selecionar jogos
         let GAME_MENU = async () => {
-            await originalmsg.reactions.removeAll()
             collected = ''
             for(key in games){
                 games_message = games_message + `${blacked}${reactions[values-1]} - ${games[key].nome}${blacked}\n`
@@ -80,7 +79,7 @@ module.exports = {
             .setColor('#adff2f')
             .setFooter({text:`📌 Reaja aqui em baixo ⬇⬇`})
             originalmsg.edit({embeds: [embed]}).then(async original => {
-                for(let i = 0; i < reactions.length; i++){
+                for(let i = 2; i < reactions.length; i++){
                     original.react(reactions[i])
                 }
             })
@@ -118,6 +117,7 @@ module.exports = {
             GAME_INFO.input1 = 'N/A'
             GAME_INFO.caller = userId
             GAME_INFO.options = 'N/A'
+            GAME_INFO.players = players
             const filter = (reaction, user) => {
                 return reaction.emoji.name === '👍' && '✔️' && user.id === (userB);
             };
@@ -218,6 +218,7 @@ module.exports = {
                     GAME_INFO.input1 = 'N/A'
                     GAME_INFO.caller = userId
                     GAME_INFO.options = 'N/A'
+                    GAME_INFO.players = [`${userId}`]
                     GAME_MENU()
                 }
                 if(collected === '2️⃣'){
@@ -226,6 +227,7 @@ module.exports = {
                     GAME_INFO.input1 = 'N/A'
                     GAME_INFO.caller = userId
                     GAME_INFO.options = 'N/A'
+                    GAME_INFO.players.push(userId)
                     originalmsg.edit({embeds:[InvitingEmbed(GAME_INFO.caller)]})
                     .then(() =>{
                         originalmsg.react('😳')
@@ -238,6 +240,7 @@ module.exports = {
                                     }
                                     username = await originalmsg.channel.send({embeds:[JoinEmbed(client.users.cache.get(user.id).username)]})
                                     players.push(user.id)
+                                    GAME_INFO.players.push(user.id)
                                 }
                                 add = true
                                 for(let i = 0; i < players.length; i++){
