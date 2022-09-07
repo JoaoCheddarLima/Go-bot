@@ -29,8 +29,6 @@ this.PauseEmbed = (tempo) => {
 }
 this.GameOverEmbed = (result, points, round, level, GAME_INFO) => {
     let text = ''
-    console.log(GAME_INFO+'\n\n\n')
-    console.log(GAME_INFO.end)
     if(GAME_INFO.type === 'solo'){
         text = `🎯 Sua Pontuação: ${points}\n📝 Perguntas: ${round}\n 🎃 Dificuldade: ${level}`
     }else{
@@ -92,7 +90,7 @@ this.GenQuestions = (level, type) => {
     }
     let numbers = []
     let questionString = ''
-    let sumAll = 1
+    let sumAll = 0
     if(type == 'mult'){
         let MAX_SUMVALUE = 50
         let LEVEL_SUMVALUE

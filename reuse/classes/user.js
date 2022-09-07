@@ -9,9 +9,6 @@ this.new_user = class user {
                 "profile":{
 
                 },
-                "configs":{
-                    
-                },
                 "gamedata":{
 
                 }

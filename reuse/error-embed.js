@@ -6,3 +6,10 @@ this.error_embed = (motivo) => {
     .setFooter({ text: `❌ ops, ${motivo}`});
     return embedtogo
 }
+
+this.success_embed = (motivo) => {
+    const embedtogo = new EmbedBuilder()
+    .setColor('#00FF00')
+    .setFooter({ text: `✅ ${motivo}`});
+    return embedtogo
+}

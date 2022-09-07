@@ -1,3 +1,4 @@
+const { discordSort } = require('discord.js')
 const fs = require('fs')
 const { questionEmbed, turnChangeEmbed, endGameEmbed, loseHp, playAgain } = require('../reuse/games/forcaquestions')
 const questions = JSON.parse(fs.readFileSync('./database/games/questions.json'))
@@ -8,6 +9,7 @@ let questions = JSON.parse(fs.readFileSync('./dataBase/games/questions.json'))
 let msgtoedit 
 let counter = 0
 let display = ''
+let oldturn
 let vidas = 6
 let vidaDisplay
 let reactions = ['✅','❌']
@@ -79,6 +81,10 @@ let allDeath = async (win) => {
     collector.on('end', collected => {
     });
 }
+let reminder = async () => {
+    msgtoedit = await message.channel.send({embeds:[embed]}).catch(err => {})
+    counter = 0
+}
 let turn = async (x) => {
     if(toplay.length === 0){
         for(let i = 0; i < x.length; i++){
@@ -100,9 +106,11 @@ let reset = () => {
 display = ''
 vidas = 6
 vidaDisplay = ''
+counter = 0
 reactions = ['✅','❌']
 toplay = []
 played = []
+oldturn = ''
 temas = []
 opts = []
 discover = []
@@ -128,25 +136,51 @@ let game = async () => {
     }
     for(let i = 0; i < discover.length; i++){
         if(discover[i] === ' '){
-            display = display + `     [${linha}]\n> `
-            linha = 0
+            console.log(display)
+            display = display.split('')
+            display.pop()
+            console.log('real pop')
+            console.log(display)
+            display = String(display.reduce((x,y) => x += y,''))
+            display = display + '・'
+            // display = display + `     [${linha}]\n> `
+            // linha = 0
         }else{
             linha++
-            display = display + discover[i] + ' '
-            if(i === discover.length - 1){
-                display = display + `     [${linha}] `
-            }
+            display = display +discover[i] + ' ' 
+            // if(i === discover.length - 1){
+            //     display = display + `     [${linha}] `
+            // }
         }
     }
     embed = questionEmbed(tema, display, jogadas, vidaDisplay, vidas)
-    await message.channel.send({embeds:[embed]}).catch(err => {})
+    if(counter === 3 || counter === 0){
+        msgtoedit = await message.channel.send({embeds:[embed]}).catch(err => {})
+        counter = 0
+    }else{
+        await msgtoedit.edit({embeds:[embed]
+    })}
+
     embed = turnChangeEmbed(await client.users.cache.get(toplay[0]).username)
-    await message.channel.send({embeds:[embed]})
-    const filter = m => {
+    oldturn = await message.channel.send({content: `||<@${toplay[0]}>||`,embeds:[embed]})
+
+    const filter = async m => {
+        counter++
+        if(toplay[0] === m.author.id && m.content === '!chute'){
+            await oldturn.delete()
+            await m.delete().catch(err => {})
+            response = m.content
+            counter === 1 ? counter = 1 : counter--
+            return true
+        }
+        if( /^[a-z]+$/i.test(m.content) === false || m.content.length > 1) return false
         if(temp.indexOf(m.author.id) === -1) return false
-        if(jogadas.indexOf(m.content) !== -1) return false
+        if(jogadas.indexOf(m.content.toLowerCase()) !== -1) return false
         if(toplay[0] !== m.author.id) return false
+        await oldturn.delete()
         response = m.content
+        await m.delete().catch(err => {})
+        counter === 1 ? counter = 1 : counter--
         return true
     };
     message.channel.awaitMessages({ filter, max: 1, time: 60000, errors: ['time'] })
@@ -200,6 +234,7 @@ let game = async () => {
                 if(done === true){
                     embed = endGameEmbed(client.users.cache.get(toplay[0]).username, prashe)
                     message.channel.send({embeds:[embed]})
+                    allDeath(true)
                 }else{
                     game()
                 }

@@ -11,7 +11,6 @@ let round = 1
 
 let gameGen = async () => {    
     let newquestion = GenQuestions(level, 'mult')
-
         if(round === 1){
             for(key of players){
                 tabela_pontos[`${key}`] = {
@@ -27,7 +26,7 @@ let gameGen = async () => {
         for(let i = 0; i < players.length; i++){
             marcar = marcar + `<@${players[i]}>,`
         }
-        questionmsg = await message.channel.send({content: `${marcar}`,embeds:[QuestionEmbed(round, newquestion.question, newquestion.level)]})
+        questionmsg = await message.channel.send({content: `||${marcar}||`,embeds:[QuestionEmbed(round, newquestion.question, newquestion.level)]})
         
         const filter = m => {
             response = Number(m.content)

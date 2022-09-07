@@ -10,17 +10,10 @@ const colors = {
 let cores = ['amarelo','roxo','azul','verde','vermelho']
 
 this.questionEmbed = (tema, display, jogadas, vidaDisplay, vida) => {
-    let randomColor = () => {
-        let x = colors[cores[Math.round(Math.random() * cores.length)]]
-        while(x === undefined){
-            x = colors[cores[Math.round(Math.random() * cores.length)]]
-        }
-        return x
-    }
     const embed = new EmbedBuilder()
-    .setColor(randomColor())
+    .setColor(colors['amarelo'])
     .setDescription(`♦ Tema: ${tema}♦\n🎈Letras já usadas: [${jogadas}]\n\n> ${display}\n\n🔸Tentativas: [${vidaDisplay}] - ${vida}/6`)
-    .setFooter({text:'📌 Em breve: Temas da comunidade, \n🔸 Digite !chute (resposta) na sua vez se já souber'})
+    .setFooter({text:'📌 Em breve: Temas da comunidade'})
     return embed
 }
 
@@ -35,7 +28,7 @@ this.endGameEmbed = (playerName,  prashe) => {
 this.turnChangeEmbed = (playerName) => {
     const embed = new EmbedBuilder()
     .setColor(colors['amarelo'])
-    .setFooter({text:`🌟 Vez de: ${playerName}`})
+    .setFooter({text:`🌟 Vez de: ${playerName}\n🎈 Escreva "!chute" se já souber ou quiser tentar acertar`})
     return embed
 }
 

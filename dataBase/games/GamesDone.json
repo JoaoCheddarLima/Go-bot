@@ -14,7 +14,7 @@
     "shortcut": "Mul"
   },
   "For": {
-    "nome": "Forca game",
+    "nome": "Forca",
     "guideText": "👾 Forca game 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Sera gerada uma forca com um tema e os jogadores vao revezar para tentar descobrir a palavra♦\n♦Cada um tem 60 segundos ⏰ para pensar em seu chute♦\n♦Digite !chute (palavra) caso souber a resposta (e for sua vez)♦\n♦Se errarem muito serão enforcados♦",
     "cor": "#adff2f",
     "playableModes": "all",

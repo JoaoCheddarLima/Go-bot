@@ -4,6 +4,7 @@ const { insight } = require('../reuse/functions')
 const { InvitingEmbed, JoinEmbed } = require('../reuse/games/mathquestions.js')
 const {EmbedBuilder, AttachmentBuilder} = require('discord.js')
 const { error_embed } = require('../reuse/error-embed')
+const { checkConfigs } = require('../reuse/config/config')
 
 module.exports = {
     name:"jogar",
@@ -20,7 +21,7 @@ module.exports = {
         }
         let reactions = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣']
         let games = JSON.parse(fs.readFileSync('./dataBase/games/GamesDone.json'))
-        let games_message
+        let games_message = ''
         let game_choosed
         let values = 1
         let game_options = {}
@@ -58,13 +59,12 @@ module.exports = {
                 return
             }
         }
-        //MATHGAME
-            let startGame = async () => {  
+        //games executor
+            let startGame = async () => {
+                await originalmsg.delete().catch(err => {})
                 const game = require(`../games/${game_choosed}`)
                 game(players,GAME_INFO,client,message)
             }
-        //end math game
-
         //menu selecionar jogos
         let GAME_MENU = async () => {
             collected = ''
@@ -80,10 +80,9 @@ module.exports = {
             .setFooter({text:`📌 Reaja aqui em baixo ⬇⬇`})
             originalmsg.edit({embeds: [embed]}).then(async original => {
                 for(let i = 2; i < reactions.length; i++){
-                    original.react(reactions[i])
+                    await original.react(reactions[i])
                 }
             })
-
             const filter = (reaction, user) => {
                 if(reactions.indexOf(reaction.emoji.name) !== -1 && user.id === (GAME_INFO.caller)){
                     collected = reaction.emoji.name
@@ -92,12 +91,14 @@ module.exports = {
                 return false
             };
             const collector = originalmsg.createReactionCollector({ filter, time: 30000, max:1 });
-            collector.on('collect', (reaction, user) => {
+            collector.on('collect', async (reaction, user) => {
                     let getnum = reactions.indexOf(collected)+1
                     game_choosed = game_options[getnum]
+                    const userOptions = JSON.parse(fs.readFileSync('./reuse/config/userOptions.json'))
+                    checkConfigs(GAME_INFO.caller, game_choosed)
+                    if(userOptions[GAME_INFO.caller][game_choosed] === true){
                     originalmsg.reactions.removeAll().catch(err => {})
                     let segundos = 15
-                    console.table(game_options)
                     embed = new EmbedBuilder()
                     .setDescription(`${games[game_choosed].guideText}`)
                     .setColor(`${games[game_choosed].cor}`)
@@ -107,6 +108,9 @@ module.exports = {
                         startGame();
                         originalmsg.delete()
                         .catch((err)=>{})}, segundos * 1000)
+                    }else{
+                        startGame()
+                    }
             })
             collector.on('end', collected => {
             });
@@ -195,8 +199,8 @@ module.exports = {
             .setFooter({text:`📌 Reaja aqui em baixo ⬇⬇`})
             originalmsg = await message.channel.send({embeds:[embed]})
 
-            for(let i = 0; i < reactions.length; i++){
-                originalmsg.react(`${reactions[i]}`)
+            for(let i = 0; i < 2; i++){
+                await originalmsg.react(`${reactions[i]}`)
             }
 
             const filter = (reaction, user) => {
@@ -211,7 +215,6 @@ module.exports = {
             };
             const collector = originalmsg.createReactionCollector({ filter, time: 30000, max:1 });
             collector.on('collect', (reaction, user) => {
-                originalmsg.reactions.removeAll().catch(err => {})
                 if(collected === '1️⃣'){
                     players.push(userId)
                     GAME_INFO.type = 'solo'
