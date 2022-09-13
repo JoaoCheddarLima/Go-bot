@@ -8,6 +8,7 @@ module.exports = async (players,GAME_INFO,client,message) => {
     let temp = [...GAME_INFO.players]
     let originalmsg
     let text
+    let reactions = ['✅','❌']
     let player1
     let player2
     let editcanvas 
@@ -66,7 +67,25 @@ module.exports = async (players,GAME_INFO,client,message) => {
     }
     //game
     let restart = async () => {
-        originalmsg = await message.channel.send(PlayAgain(client.users.cache.get(message.author.id).username)).catch(err => {})
+        let originalmsg = await message.channel.send(PlayAgain(await client.users.cache.get(GAME_INFO.caller).username)).catch(err => {})
+        for(let i = 0; i < reactions.length; i++){
+            originalmsg.react(reactions[i]).catch(err => {})
+        }
+        const filter = (reaction, user) => {
+            if(reactions.indexOf(reaction.emoji.name) !== -1 && user.id === (GAME_INFO.caller)){
+                collected = reaction.emoji.name
+                return true
+            }
+            return false
+        };
+        const collector = originalmsg.createReactionCollector({ filter, time: 30000, max:1 });
+        collector.on('collect', (reaction, user) => {
+            if(reaction.emoji.name === '✅'){
+                game()
+            }
+        })
+        collector.on('end', collected => {
+        });
     }
     let game = async () => {
         let players = sorteio()
@@ -104,6 +123,7 @@ module.exports = async (players,GAME_INFO,client,message) => {
                     let who = players.player1.id === full.author.id ? players.player1.type : players.player2.type
                     escolha(esc, who)
                     if(checkWin(who, tabuleiro) === true){
+                        await originalmsg.delete().catch(err => {})
                         await displayDraw(who,esc).then(async () => {
                             await message.channel.send({content:`||${mark}||`,embeds:[ImageEmbed(),winnerEmbed(client.users.cache.get(toplay[0]).username,rounds)], files:[attachments] })
                         })
