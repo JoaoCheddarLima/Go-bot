@@ -1,14 +1,14 @@
 const fs = require('fs')
-
+let path = './src/database'
 this.insight = (name) => {
-    let insights = JSON.parse(fs.readFileSync('./database/insights.json'))
+    let insights = JSON.parse(fs.readFileSync(`${path}/insights.json`))
     let actual = insights[name]
     if(actual === undefined){
         insights[name] = 1
-        fs.writeFileSync('./database/insights.json', JSON.stringify(insights, null, 2))
+        fs.writeFileSync(`${path}/insights.json`, JSON.stringify(insights, null, 2))
     }else{
         insights[name] = insights[name] + 1
-        fs.writeFileSync('./database/insights.json', JSON.stringify(insights, null, 2)) 
+        fs.writeFileSync(`${path}/insights.json`, JSON.stringify(insights, null, 2)) 
     }
 }
 this.finder = (a, b) => {

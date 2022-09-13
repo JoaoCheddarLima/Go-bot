@@ -13,8 +13,8 @@ client.prefix = 'g!'
 client.commands = new Discord.Collection();
 client.login(process.env.BOT_KEY);
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
-const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'))
+const eventFiles = fs.readdirSync('./src/events').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
 	

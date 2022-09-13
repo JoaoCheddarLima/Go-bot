@@ -1,11 +1,12 @@
 const { discordSort } = require('discord.js')
 const fs = require('fs')
 const { questionEmbed, turnChangeEmbed, endGameEmbed, loseHp, playAgain } = require('../reuse/games/forcaquestions')
-const questions = JSON.parse(fs.readFileSync('./database/games/questions.json'))
+const questions = JSON.parse(fs.readFileSync('./src/database/games/questions.json'))
 
 module.exports = async (babe,GAME_INFO,client,message) => {
 //variables
-let questions = JSON.parse(fs.readFileSync('./dataBase/games/questions.json'))
+let gone = []
+let questions = JSON.parse(fs.readFileSync('./src/dataBase/games/questions.json'))
 let msgtoedit 
 let counter = 0
 let display = ''
@@ -43,10 +44,12 @@ let newQuestion = () => {
         temaArray = possibilities[randomTema]
         tema = temas[randomTema]
         randomPrashe = Math.floor(Math.random() * temaArray.length)
+        return temaArray[randomPrashe]
     }
-    getRandom()
-    prashe = temaArray[randomPrashe]
-    
+    prashe = getRandom()
+    while(gone.indexOf(prashe) !== -1){
+        prashe = getRandom()
+    }
     for(let i = 0; i < prashe.length; i++){
         opts.push(prashe[i])
         if(prashe[i] == ' '){
@@ -140,14 +143,9 @@ let game = async () => {
             display.pop()
             display = String(display.reduce((x,y) => x += y,''))
             display = display + '・'
-            // display = display + `     [${linha}]\n> `
-            // linha = 0
         }else{
             linha++
             display = display +discover[i] + ' ' 
-            // if(i === discover.length - 1){
-            //     display = display + `     [${linha}] `
-            // }
         }
     }
     embed = questionEmbed(tema, display, jogadas, vidaDisplay, vidas)
@@ -238,7 +236,6 @@ let game = async () => {
             }
         }
     }).catch(collected => {
-            console.log(collected)
             message.channel.send(`${client.users.cache.get(toplay[0]).username} demorou 60 segundos e o jogo finalizou aqui.`)
     });
 }

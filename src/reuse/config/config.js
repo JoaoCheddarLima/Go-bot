@@ -1,5 +1,5 @@
 const fs = require('fs')
-let path = './reuse/config/userOptions.json'
+let path = './src/reuse/config/userOptions.json'
 
 let genConfig = (id) => {
     const usersConfigs = JSON.parse(fs.readFileSync(path))

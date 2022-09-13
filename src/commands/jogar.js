@@ -1,4 +1,5 @@
 const fs = require('fs')
+let path = './src/database/'
 const Canvas = require('@napi-rs/canvas')
 const { insight } = require('../reuse/functions')
 const { InvitingEmbed, JoinEmbed } = require('../reuse/games/mathquestions.js')
@@ -19,8 +20,8 @@ module.exports = {
             players:[],
             end:''
         }
-        let reactions = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣']
-        let games = JSON.parse(fs.readFileSync('./dataBase/games/GamesDone.json'))
+        let reactions = ['1️⃣','2️⃣','3️⃣','4️⃣']
+        let games = JSON.parse(fs.readFileSync(`${path}`+'games/GamesDone.json'))
         let games_message = ''
         let game_choosed
         let values = 1
@@ -98,7 +99,7 @@ module.exports = {
             collector.on('collect', async (reaction, user) => {
                     let getnum = reactions.indexOf(collected)+1
                     game_choosed = game_options[getnum]
-                    const userOptions = JSON.parse(fs.readFileSync('./reuse/config/userOptions.json'))
+                    const userOptions = JSON.parse(fs.readFileSync('./src/reuse/config/userOptions.json'))
                     checkConfigs(GAME_INFO.caller, game_choosed)
                     if(userOptions[GAME_INFO.caller][game_choosed] === true){
                     originalmsg.reactions.removeAll().catch(err => {})
@@ -147,9 +148,9 @@ module.exports = {
                     ctx.drawImage(avatar1, 0, 0, 128, 128)
                     const avatar2 = await Canvas.loadImage(client.users.cache.get(userB).displayAvatarURL({ format: 'jpg', size:512})).catch((err)=>{console.error(err)})
                     ctx.drawImage(avatar2, 138, 0, 128, 128)
-                    const reaction = await Canvas.loadImage('./dataBase/assets/vs.png')
+                    const reaction = await Canvas.loadImage('./src/dataBase/assets/vs.png')
                     ctx.drawImage(reaction, 0, 0, 266, 128)
-                    const border = await Canvas.loadImage('./dataBase/assets/border.png')
+                    const border = await Canvas.loadImage('./src/dataBase/assets/border.png')
                     ctx.drawImage(border, 0, 0, 266, 128)
                     attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'test.png' });
                 } catch (err){ 

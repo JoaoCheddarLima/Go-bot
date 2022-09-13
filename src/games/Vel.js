@@ -55,12 +55,12 @@ module.exports = async (players,GAME_INFO,client,message) => {
         const board = canvas.getContext('2d')
         let coords = findLocal(choose)
         if(rounds === 0){
-            background = await Canvas.loadImage('./dataBase/assets/Tic-tac-toe.png');
+            background = await Canvas.loadImage('./src/dataBase/assets/Tic-tac-toe.png');
             board.drawImage(background, 0, 0, canvas.width, canvas.height);
         }else{
             background = originalmsg.embeds[0].data.image.url
             board.drawImage((await Canvas.loadImage(background)), 0, 0, canvas.width, canvas.height);
-            board.drawImage((await Canvas.loadImage(`./dataBase/assets/${type}.png`)), coords['x'], coords['y'], 32, 32)
+            board.drawImage((await Canvas.loadImage(`./src/dataBase/assets/${type}.png`)), coords['x'], coords['y'], 32, 32)
         }
         attachments = new AttachmentBuilder(await canvas.encode('png'), { name: 'test.png' }); 
     }
