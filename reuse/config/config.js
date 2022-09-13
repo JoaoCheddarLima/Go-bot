@@ -6,7 +6,6 @@ let genConfig = (id) => {
     usersConfigs[`${id}`] = {}
     fs.writeFileSync(path, JSON.stringify(usersConfigs, null, 2));
 }
-
 let checkUser = (id) => {
     const usersConfigs = JSON.parse(fs.readFileSync(path))
     if(usersConfigs[id] === undefined) return false

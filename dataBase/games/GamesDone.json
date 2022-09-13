@@ -19,5 +19,12 @@
     "cor": "#adff2f",
     "playableModes": "all",
     "shortcut": "For"
+  },
+  "Vel": {
+    "nome": "Velha",
+    "guideText": "👾 Velha 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Irei criar o tabuleiro e irei enviar as jogadas disponiveis♦\n♦60 segundos♦\n♦O jogo acaba quando o tempo se esgota, quando alguem perde,ganha ou empata♦",
+    "cor": "#adff2f",
+    "playableModes": "duo",
+    "shortcut": "Vel"
   }
 }

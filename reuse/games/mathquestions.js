@@ -6,14 +6,16 @@ this.JoinEmbed = (username) => {
     .setFooter({text: `🎈 ${username} entrou!`});
     return embedtogo
 }
+
 this.InvitingEmbed = (caller) => {
     let text = `♦ ATENÇÃO! ♦\n<@${caller}> está criando uma partida aberta`
     const embedtogo = new EmbedBuilder()
     .setColor('#FF0000')
     .setDescription(`${text}`)
-    .setFooter({text: `\n♦- Encerra em 30 segundos -♦\n⬇⬇ REAJA PARA PARTICIPAR ⬇⬇`});
+    .setFooter({text: `\n♦- Encerra em 15 segundos -♦\n⬇⬇ REAJA PARA PARTICIPAR ⬇⬇`});
     return embedtogo
 }
+
 this.LevelUpEmbed = (level) => {
     const embedtogo = new EmbedBuilder()
     .setColor('#FFFF00')

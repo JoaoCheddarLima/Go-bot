@@ -47,7 +47,7 @@ module.exports = {
         }
         if(input1){
             try{
-                if(userId === input1.slice(2).slice(0,-1)) return message.channel.send({embeds:[error_embed('ainda não pode jogar sozinho')]}).then(() => message.delete().catch((err) => {console.error(err)}))
+                //if(userId === input1.slice(2).slice(0,-1)) return message.channel.send({embeds:[error_embed('ainda não pode jogar sozinho')]}).then(() => message.delete().catch((err) => {console.error(err)}))
                 if(error == true) return
                 userB = input1.slice(2).slice(0,-1)
                 userB_Name = await client.users.cache.get(userB).username
@@ -83,8 +83,12 @@ module.exports = {
                     await original.react(reactions[i])
                 }
             })
-            const filter = (reaction, user) => {
+            const filter = async (reaction, user) => {
                 if(reactions.indexOf(reaction.emoji.name) !== -1 && user.id === (GAME_INFO.caller)){
+                    if(game_options[reactions.indexOf(reaction.emoji.name)+1] === 'Vel' && GAME_INFO.type !== 'duo'){
+                        await message.channel.send('Este jogo é apenas para dois jogadores')
+                        return
+                    }
                     collected = reaction.emoji.name
                     return true
                 }
@@ -167,8 +171,12 @@ module.exports = {
                     //espera a resposta do desafiado
                     const collector = msg.createReactionCollector({ filter, time: 30000, max:1 });
     
-                    collector.on('collect', (reaction, user) => {
+                    collector.on('collect', async (reaction, user) => {
                         originalmsg.removeAttachments()
+                        await originalmsg.reactions.removeAll().catch(err => {})
+                        for(let i = 0; i < 2; i++){
+                            await originalmsg.react(`${reactions[i]}`)
+                        }
                         GAME_MENU()
                     });
                     collector.on('end', collected => {
@@ -256,7 +264,7 @@ module.exports = {
                                 }
                                 return add === true;
                             };
-                            const collector = originalmsg.createReactionCollector({ filter, time: 30000, max:10 });
+                            const collector = originalmsg.createReactionCollector({ filter, time: 15000, max:10 });
                             collector.on('collect', (reaction, user) => {
                             })
                             collector.on('end', collected => {

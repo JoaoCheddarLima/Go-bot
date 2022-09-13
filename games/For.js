@@ -136,11 +136,8 @@ let game = async () => {
     }
     for(let i = 0; i < discover.length; i++){
         if(discover[i] === ' '){
-            console.log(display)
             display = display.split('')
             display.pop()
-            console.log('real pop')
-            console.log(display)
             display = String(display.reduce((x,y) => x += y,''))
             display = display + '・'
             // display = display + `     [${linha}]\n> `
