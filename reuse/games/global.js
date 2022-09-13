@@ -7,6 +7,7 @@ const colors = {
     verde:"#00FF00",
     vermelho:"FF0000"
 }
+
 this.PlayAgain = (username) => {
     text = `❓ Jogar novamente ${username}?\n🔸 [ ✅ Sim ] // [ ❌ Não ] 🔸`
     const embed = new EmbedBuilder()
@@ -14,6 +15,7 @@ this.PlayAgain = (username) => {
     .setColor('000000')
     return embed
 }
+
 this.ImageEmbed = () => {
     const embed = new EmbedBuilder()
     .setColor('#000000')

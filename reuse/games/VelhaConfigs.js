@@ -23,7 +23,7 @@ this.turnChangeEmbedVelha = (playerName, jogadas, attachment) => {
     const embed = new EmbedBuilder()
     .setColor(colors['amarelo'])
     .setImage(`attachment://test.png`)
-    .setFooter({text:`🌟 Vez de: ${playerName}\n🎈 [${jogadas}]`})
+    .setFooter({text:`🌟 Vez de: ${playerName}\n🎈 Escolha: ${jogadas.join('-')}]`})
     return embed
 }
 this.findLocal = (choose) => {
