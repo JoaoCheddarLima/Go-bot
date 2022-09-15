@@ -82,6 +82,8 @@ module.exports = async (players,GAME_INFO,client,message) => {
         collector.on('collect', (reaction, user) => {
             if(reaction.emoji.name === '✅'){
                 game()
+            }else{
+                return
             }
         })
         collector.on('end', collected => {
@@ -103,6 +105,7 @@ module.exports = async (players,GAME_INFO,client,message) => {
             }
             const filter = async m => {
                 counter++
+                console.log(counter)
                 if(counter === 6){
                     await originalmsg.delete().catch(err => {})
                     originalmsg = await message.channel.send({content:`||${mark}||`,embeds:[turnChangeEmbedVelha(client.users.cache.get(toplay[0]).username, possibilities)], files:[attachments] })

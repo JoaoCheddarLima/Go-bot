@@ -26,5 +26,12 @@
     "cor": "#adff2f",
     "playableModes": "duo",
     "shortcut": "Vel"
+  },
+  "Rol": {
+    "nome": "Roleta russa",
+    "guideText": "👾 Roleta russa 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Vai ser simples, vou te dar duas alternativas, atirar ou roletar e atirar♦\n♦Voce vai ter 15 segundos para responder♦\n♦O jogo acaba somente quando restar apenas um jogador♦",
+    "cor": "#adff2f",
+    "playableModes": "grupo",
+    "shortcut": "Rol"
   }
 }

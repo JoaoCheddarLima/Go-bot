@@ -20,7 +20,7 @@ module.exports = {
             players:[],
             end:''
         }
-        let reactions = ['1️⃣','2️⃣','3️⃣','4️⃣']
+        let reactions = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣']
         let games = JSON.parse(fs.readFileSync(`${path}`+'games/GamesDone.json'))
         let games_message = ''
         let game_choosed
@@ -88,6 +88,10 @@ module.exports = {
                 if(reactions.indexOf(reaction.emoji.name) !== -1 && user.id === (GAME_INFO.caller)){
                     if(game_options[reactions.indexOf(reaction.emoji.name)+1] === 'Vel' && GAME_INFO.type !== 'duo'){
                         await message.channel.send('Este jogo é apenas para dois jogadores')
+                        return
+                    }
+                    if(game_options[reactions.indexOf(reaction.emoji.name)+1] === 'Rol' && GAME_INFO.type == 'solo'){
+                        await message.channel.send('Este não pode ser jogado sozinho...')
                         return
                     }
                     collected = reaction.emoji.name
@@ -166,7 +170,7 @@ module.exports = {
                     .setImage(`attachment://test.png`)
                     .setFooter({text:`📌Dica: para iniciar sem passar nos menus digite g!jogar @usuario nome_do_jogo, exemplo: g!jogar @matheusFortnite matgame\n📌Para consultar os nomes dos jogos digite g!ids`})
                     try{
-                    message.channel.send({content:`<@${userB}>,<@${userA}>`,embeds: [embed], files:[attachment] }).then(msg => {
+                    message.channel.send({content:`||<@${userB}>,<@${userA}>||`,embeds: [embed], files:[attachment] }).then(msg => {
                         originalmsg = msg
                         msg.react('👍').then(() => {
                     //espera a resposta do desafiado

@@ -159,8 +159,17 @@ let game = async () => {
     embed = turnChangeEmbed(await client.users.cache.get(toplay[0]).username)
     oldturn = await message.channel.send({content: `||<@${toplay[0]}>||`,embeds:[embed]})
 
-    const filter = async m => {
+    const filter = async m => { 
         counter++
+        if(counter === 6){
+            let embed = questionEmbed(tema, display, jogadas, vidaDisplay, vidas)
+            await msgtoedit.delete().catch(err => {})
+            await oldturn.delete().catch(err => {})
+            msgtoedit = await message.channel.send({embeds:[embed]}).catch(err => {})
+            embed = turnChangeEmbed(await client.users.cache.get(toplay[0]).username)
+            oldturn = await message.channel.send({content: `||<@${toplay[0]}>||`,embeds:[embed]})
+            counter = 0
+        }
         if(toplay[0] === m.author.id && m.content === '!chute'){
             await oldturn.delete()
             await m.delete().catch(err => {})

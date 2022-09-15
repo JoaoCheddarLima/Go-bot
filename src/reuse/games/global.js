@@ -22,3 +22,23 @@ this.ImageEmbed = () => {
     .setImage(`attachment://test.png`)
     return embed
 }
+
+this.collectReactions = (toplay, reactions, msg) => {
+    let collected
+    for(key of reactions){
+        msg.react(key)
+    }
+    const filter = (reaction, user) => {
+        if(reactions.indexOf(reaction.emoji.name) !== -1 && user.id === (toplay)){
+            collected = reaction.emoji.name
+            return true
+        }
+        return false
+    };
+    const collector = msg.createReactionCollector({ filter, time: 30000, max:1 });
+    collector.on('collect', (reaction, user) => {
+        return collected
+    })
+    collector.on('end', collected => {
+    });
+}

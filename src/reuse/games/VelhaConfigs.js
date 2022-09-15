@@ -28,7 +28,7 @@ this.turnChangeEmbedVelha = (playerName, jogadas, attachment) => {
 }
 this.findLocal = (choose) => {
     let pixels = {
-        'y':{ 1:9, 2:56, 3:101 },
+        'y':{ 1:12, 2:59, 3:105 },
         'x':{ 1:9, 2:57, 3:105 }
     }
     let x
