@@ -1,15 +1,15 @@
 const { EmbedBuilder } = require('discord.js') 
 
 this.removePlayer = (player,players) => {
-    players.slice(players.indexOf(player), 1)
+    players.splice(players.indexOf(player), 1)
     return players
 }
 
 this.luckyNot = (x) => {
     let randomOut = ['A sorte não estava com esta alma', 'O fim dele foi aqui', 'Quem vai limpar isso?', 'Não foi desta vez', 'Menos um']
     let randomStill = ['Quase...', 'Top 5 pessoas que até o diabo tem medo', 'oof... nem você acreditou', 'O proximo não vai ter a mesma sorte']
-    const m1 = `💀 Bang! ${randomOut[Math.floor(Math.random() * randomOut.length)]}`
-    const m2 = `❗ Click! ${randomStill[Math.floor(Math.random() * randomStill.length)]}`
+    const m1 = `💀 Bang morreu! ${randomOut[Math.floor(Math.random() * randomOut.length)]}`
+    const m2 = `❗ Bang haha viveu! ${randomStill[Math.floor(Math.random() * randomStill.length)]}`
     let text = x === true? m1 : m2
     let color = x === true? '#FF0000' : 'FFFFFF'
     const embed = new EmbedBuilder()

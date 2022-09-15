@@ -7,11 +7,8 @@ module.exports = async (players,GAME_INFO,client,message) => {
     //variables
     let temp = [...GAME_INFO.players]
     let originalmsg
-    let text
     let reactions = ['✅','❌']
     let player1
-    let player2
-    let editcanvas 
     let esc
     let full
     let attachments
@@ -33,22 +30,6 @@ module.exports = async (players,GAME_INFO,client,message) => {
             pos += 1
         }
         tabuleiro[0,fileira][pos-1] = embape
-    }
-
-    let sorteio = () => {
-        player1 = Math.floor(Math.random()*temp.length)
-        toplay.push(temp[player1])
-        toplay.push(temp[player1 === 0? 1 : 0])
-        return {
-            player1:{
-                id:toplay[0],
-                type:'x'
-            },
-            player2:{
-                id:toplay[1],
-                type:'y'
-            }
-        }
     }
     //display
     let displayDraw = async (type, choose) =>{
@@ -90,22 +71,19 @@ module.exports = async (players,GAME_INFO,client,message) => {
         });
     }
     let game = async () => {
-        let players = sorteio()
         let newRound = async (simb, choose) => {
-            let mark = `<@${toplay[0]}>`
             if(toplay.length === 0){
                 toplay = [...temp]
             }
+            let mark = `<@${toplay[0]}>`
             await displayDraw(simb,choose)
             if(originalmsg === undefined){
                 originalmsg = await message.channel.send({content:`||${mark}||`,embeds:[turnChangeEmbedVelha(client.users.cache.get(toplay[0]).username, possibilities)], files:[attachments] })
             }else{
-                console.log(toplay)
                 await originalmsg.edit({content:`||${mark}||`,embeds:[turnChangeEmbedVelha(client.users.cache.get(toplay[0]).username, possibilities)], files:[attachments] })
             }
             const filter = async m => {
                 counter++
-                console.log(counter)
                 if(counter === 6){
                     await originalmsg.delete().catch(err => {})
                     originalmsg = await message.channel.send({content:`||${mark}||`,embeds:[turnChangeEmbedVelha(client.users.cache.get(toplay[0]).username, possibilities)], files:[attachments] })

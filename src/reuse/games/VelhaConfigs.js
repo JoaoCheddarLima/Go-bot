@@ -28,7 +28,7 @@ this.turnChangeEmbedVelha = (playerName, jogadas, attachment) => {
 }
 this.findLocal = (choose) => {
     let pixels = {
-        'y':{ 1:12, 2:59, 3:105 },
+        'y':{ 1:11, 2:57, 3:104 },
         'x':{ 1:9, 2:57, 3:105 }
     }
     let x
@@ -62,13 +62,13 @@ this.checkWin = (typo, tabuleiro) => {
         let l1 = tabuleiro[0,0]
         let l2 = tabuleiro[0,1]
         let l3 = tabuleiro[0,2]
-        if((l1[i] && l2[i] && l3[i]) === typo) return true
+        if(l1[i] === typo && l2[i] === typo && l3[i] === typo) return true
     }
     if(tabuleiro[1][1] === typo){
         let ev = 0
         let op = 2
         for(let i = 0; i < 2; i++){
-            if((tabuleiro[0][ev] && tabuleiro[2][op]) === typo) return true
+            if(tabuleiro[0][ev]  === typo && tabuleiro[2][op] === typo) return true
             ev +=2
             op -=2
         }

@@ -1,14 +1,16 @@
 const { turn, removePlayer, shuffling, luckyNot, russaEnd, shoot } = require('../reuse/games/russaConfigs')
-module.exports = async (players,GAME_INFO,client,message) => {
+module.exports = async (x,GAME_INFO,client,message) => {
     let tambor = [null,null,null,null,null,true]
     let slot = 0
     let action 
+    let players
     let prize = 0
     let originalmsg 
     let atual = 0
     let collected
     let reactions = ['🔫','🔀']
-    let atirar = (playerid, tambor, players) => {
+    let atirar = (playerid, tambor) => {
+        atual++
         let islast = () => {
             if(slot === tambor.length -1){
                 slot = 0
@@ -32,7 +34,7 @@ module.exports = async (players,GAME_INFO,client,message) => {
         slot = Math.floor(Math.random() * tambor.length)
     }
     let new_game = async () => {
-        let players = [...GAME_INFO.players]
+        players = [...GAME_INFO.players]
         atual = 0
         shuffle(tambor)
         let new_round = async () => {
@@ -40,7 +42,7 @@ module.exports = async (players,GAME_INFO,client,message) => {
                 originalmsg.delete().catch(err => {})
                 return await message.channel.send({embeds:[russaEnd(client.users.cache.get(players[0]).username, prize)]})
             }
-            if(atual > players.length){
+            if(atual > players.length - 1){
                 atual = 0
             }
             originalmsg = await message.channel.send({embeds:[turn(client.users.cache.get(players[atual]).username)]})
