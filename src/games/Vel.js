@@ -3,20 +3,29 @@ const {AttachmentBuilder, Attachment} = require('discord.js')
 const Canvas = require('@napi-rs/canvas')
 const { turnChangeEmbedVelha, findLocal, checkWin, drawEmbed, winnerEmbed } = require('../reuse/games/VelhaConfigs')
 const { PlayAgain, ImageEmbed } = require('../reuse/games/global')
-module.exports = async (players,GAME_INFO,client,message) => {
+module.exports = async (playexrs,GAME_INFO,client,message) => {
     //variables
     let temp = [...GAME_INFO.players]
     let originalmsg
     let reactions = ['✅','❌']
-    let player1
+    let players = {
+        'player1':{
+            "id":temp[0],
+            'type':'x'
+        },
+        'player2':{
+            'id':temp[1],
+            'type':'y'
+        }
+    }
     let esc
     let full
     let attachments
     let counter = 0
     let background
-    let possibilities = [1,2,3,4,5,6,7,8,9]
+    let possibilities
     let toplay = []
-    let tabuleiro = [[null, null, null],[null, null, null],[null, null, null]]
+    let tabuleiro
     let rounds = 0
     let escolha = (num, embape) => {
         let fileira = 0
@@ -48,7 +57,7 @@ module.exports = async (players,GAME_INFO,client,message) => {
     }
     //game
     let restart = async () => {
-        let originalmsg = await message.channel.send(PlayAgain(await client.users.cache.get(GAME_INFO.caller).username)).catch(err => {})
+        let originalmsg = await message.channel.send({embeds:[PlayAgain(await client.users.cache.get(GAME_INFO.caller).username)]}).catch(err => {})
         for(let i = 0; i < reactions.length; i++){
             originalmsg.react(reactions[i]).catch(err => {})
         }
@@ -71,6 +80,11 @@ module.exports = async (players,GAME_INFO,client,message) => {
         });
     }
     let game = async () => {
+        rounds = 0
+        originalmsg = undefined
+        counter = 0
+        tabuleiro = [[null, null, null],[null, null, null],[null, null, null]]
+        possibilities = [1,2,3,4,5,6,7,8,9]
         let newRound = async (simb, choose) => {
             if(toplay.length === 0){
                 toplay = [...temp]
@@ -101,6 +115,7 @@ module.exports = async (players,GAME_INFO,client,message) => {
             message.channel.awaitMessages({ filter, max: 1, time: 60000, errors: ['time'] })
             .then(async collected => {
                 if(rounds < 9){
+                    console.log(full.author.id)
                     let who = players.player1.id === full.author.id ? players.player1.type : players.player2.type
                     escolha(esc, who)
                     if(checkWin(who, tabuleiro) === true){
