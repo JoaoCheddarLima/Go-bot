@@ -7,7 +7,12 @@ const colors = {
     verde:"#00FF00",
     vermelho:"FF0000"
 }
-
+this.quitEmbed = (username) => {
+    const embedtogo = new EmbedBuilder()
+    .setColor('FF0000')
+    .setFooter({text: `❗ ${username} saiu!`});
+    return embedtogo
+}
 this.PlayAgain = (username) => {
     text = `❓ Jogar novamente ${username}?\n🔸 [ ✅ Sim ] // [ ❌ Não ] 🔸`
     const embed = new EmbedBuilder()

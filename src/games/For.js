@@ -1,11 +1,13 @@
-const { discordSort } = require('discord.js')
 const fs = require('fs')
 const { questionEmbed, turnChangeEmbed, endGameEmbed, loseHp, playAgain } = require('../reuse/games/forcaquestions')
+const { quitEmbed } = require('../reuse/games/global')
+const { JoinEmbed } = require('../reuse/games/mathquestions')
 const questions = JSON.parse(fs.readFileSync('./src/database/games/questions.json'))
 
 module.exports = async (babe,GAME_INFO,client,message) => {
 //variables
 let gone = []
+let reply = false
 let questions = JSON.parse(fs.readFileSync('./src/dataBase/games/questions.json'))
 let msgtoedit 
 let counter = 0
@@ -25,7 +27,6 @@ let players2 = []
 for(let i = 0; i < GAME_INFO.players.length; i++){
     players2.push(GAME_INFO.players[i])
 }
-let NO_LOSE
 let embed
 let temaArray
 let temp = [...GAME_INFO.players]
@@ -61,32 +62,33 @@ let newQuestion = () => {
 }
 //GAME SYSTEMS
 let allDeath = async (win) => {
-    let embed = playAgain(prashe, client.users.cache.get(message.author.id).username, win)
+    let embed = playAgain(prashe, '', win)
     let originalmsg = await message.channel.send({embeds:[embed]})
+    let nowplaying = []
     for(let i = 0; i < reactions.length; i++){
-        originalmsg.react(reactions[i]).catch(err => {})
+        await originalmsg.react(reactions[i]).catch(err => {})
     }
-    const filter = (reaction, user) => {
-        if(reactions.indexOf(reaction.emoji.name) !== -1 && user.id === (GAME_INFO.caller)){
+    const filter = async (reaction, user) => {
+        if(reaction.emoji.name === '✅' && nowplaying.indexOf(user.id) == -1 ){
             collected = reaction.emoji.name
             return true
         }
+        nowplaying.splice(nowplaying.indexOf(user.id), 1)
+        await originalmsg.channel.send({embeds:[quitEmbed(`${client.users.cache.get(user.id).username}`)]})
         return false
     };
-    const collector = originalmsg.createReactionCollector({ filter, time: 30000, max:1 });
-    collector.on('collect', (reaction, user) => {
-        if(reaction.emoji.name === '✅'){
-            reset()
-            newQuestion()
-            game()
-        }
+    const collector = originalmsg.createReactionCollector({ filter, time: 10000, max:10});
+    collector.on('collect', async (reaction, user) => {
+            await originalmsg.channel.send({embeds:[JoinEmbed(`${client.users.cache.get(user.id).username}`)]})
+            nowplaying.push(user.id)
     })
     collector.on('end', collected => {
+        if(nowplaying.length === 0) return
+        GAME_INFO.players = nowplaying
+        reset()
+        newQuestion()
+        game()
     });
-}
-let reminder = async () => {
-    msgtoedit = await message.channel.send({embeds:[embed]}).catch(err => {})
-    counter = 0
 }
 let turn = async (x) => {
     if(toplay.length === 0){
@@ -132,7 +134,6 @@ let game = async () => {
     turn(temp)
     done = true
     display = ''
-    let linha = 0
     vidaDisplay = ''
     for(let i = 0; i < vidas; i++){
         vidaDisplay = vidaDisplay + '♥'
@@ -171,7 +172,7 @@ let game = async () => {
             counter = 0
         }
         if(toplay[0] === m.author.id && m.content === '!chute'){
-            await oldturn.delete()
+            await oldturn.delete().catch(err => {})
             await m.delete().catch(err => {})
             response = m.content
             counter === 1 ? counter = 1 : counter--
@@ -189,6 +190,7 @@ let game = async () => {
     };
     message.channel.awaitMessages({ filter, max: 1, time: 60000, errors: ['time'] })
     .then(async collected => {
+        reply = true
         if(response === '!chute'){
             message.channel.send({content:'Pode tentar acertar já, apenas uma chance.'})
             const filter = async (m) => {
@@ -244,8 +246,21 @@ let game = async () => {
                 }
             }
         }
-    }).catch(collected => {
-            message.channel.send(`${client.users.cache.get(toplay[0]).username} demorou 60 segundos e o jogo finalizou aqui.`)
+    }).catch(async collected => {
+        console.log(collected)
+        if(reply === false){
+            await message.channel.send(`por falta de resposta ${client.users.cache.get(toplay[0]).username} foi removido.`)
+            temp.splice(temp.indexOf(toplay[0]),1)
+            if(temp.length === 0){
+                await oldturn.delete().catch(err => {})
+                await originalmsg.delete.catch(err => {})
+                allDeath()
+                return
+            }else{
+                game()
+            }
+        }
+        reply = false
     });
 }
 newQuestion()
