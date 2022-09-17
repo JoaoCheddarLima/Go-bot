@@ -5,7 +5,8 @@ const fs = require('fs')
 module.exports = {
     name:'ajuda',
     async execute(message,args, client, input1, input2, userId){
-        insight('ajuda')
+        insight('Support')
+        console.log(message.guild)
         let data = JSON.parse(fs.readFileSync('package.json'))
         let version = data.version
         let erro = error_embed('Por algum motivo❓ não consegui responder sua mensagem 💔')

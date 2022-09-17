@@ -4,34 +4,39 @@
     "guideText": "👾 Matematica quiz (soma) 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Irei enviar as perguntas no chat♦\n♦Os jogadores tem: 30 segundos ? para responder♦\n♦Caso nao acertem dentro do tempo o jogo encerra♦",
     "cor": "#7600bc",
     "playableModes": "all",
-    "shortcut": "Mat"
+    "shortcut": "Mat",
+    "infos": ["points", "level", "rounds","jogos"]
   },
   "Mul": {
     "nome": "Multiplicar quiz",
     "guideText": "👾 Multiplicar quiz 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Irei enviar perguntas de matematica♦\n♦Os jogadores tem 30 segundos para acertar♦\n♦O jogo caba caso ninguem acerte a tempo♦",
     "cor": "#adff2f",
     "playableModes": "all",
-    "shortcut": "Mul"
+    "shortcut": "Mul",
+    "infos": ["points", "level", "round","jogos"]
   },
   "For": {
     "nome": "Forca",
     "guideText": "👾 Forca game 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Sera gerada uma forca com um tema e os jogadores vao revezar para tentar descobrir a palavra♦\n♦Cada um tem 60 segundos ⏰ para pensar em seu chute♦\n♦Digite !chute (palavra) caso souber a resposta (e for sua vez)♦\n♦Se errarem muito serão enforcados♦",
     "cor": "#adff2f",
     "playableModes": "all",
-    "shortcut": "For"
+    "shortcut": "For",
+    "infos": ["acertos", "jogos"]
   },
   "Vel": {
     "nome": "Velha",
     "guideText": "👾 Velha 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Irei criar o tabuleiro e irei enviar as jogadas disponiveis♦\n♦60 segundos♦\n♦O jogo acaba quando o tempo se esgota, quando alguem perde,ganha ou empata♦",
     "cor": "#adff2f",
     "playableModes": "duo",
-    "shortcut": "Vel"
+    "shortcut": "Vel",
+    "infos":["jogos","empates","wins","losses"]
   },
   "Rol": {
     "nome": "Roleta russa",
     "guideText": "👾 Roleta russa 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Vai ser simples, vou te dar duas alternativas, atirar ou roletar e atirar♦\n♦Voce vai ter 15 segundos para responder♦\n♦O jogo acaba somente quando restar apenas um jogador♦",
     "cor": "#adff2f",
     "playableModes": "grupo",
-    "shortcut": "Rol"
+    "shortcut": "Rol",
+    "infos":["tiros","wins","ganhos","jogos", "gastos","percas"]
   }
 }

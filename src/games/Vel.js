@@ -1,9 +1,12 @@
 const fs = require('fs')
 const {AttachmentBuilder, Attachment} = require('discord.js')
 const Canvas = require('@napi-rs/canvas')
-const { turnChangeEmbedVelha, findLocal, checkWin, drawEmbed, winnerEmbed } = require('../reuse/games/VelhaConfigs')
+const { turnChangeEmbedVelha, findLocal, checkWin, drawEmbed, winnerEmbed, addWinner, tie } = require('../reuse/games/VelhaConfigs')
 const { PlayAgain, ImageEmbed } = require('../reuse/games/global')
+const { insight } = require('../reuse/functions')
+const { addGamePoints } = require('../reuse/config/data')
 module.exports = async (playexrs,GAME_INFO,client,message) => {
+    insight('VelhaGame', true, 'games')
     //variables
     let temp = [...GAME_INFO.players]
     let originalmsg
@@ -17,6 +20,12 @@ module.exports = async (playexrs,GAME_INFO,client,message) => {
             'id':temp[1],
             'type':'y'
         }
+    }
+    let infos = {
+        jogos: 1,
+        empates: 0,
+        wins: 0,
+        losses: 0
     }
     let esc
     let full
@@ -120,6 +129,7 @@ module.exports = async (playexrs,GAME_INFO,client,message) => {
                     escolha(esc, who)
                     if(checkWin(who, tabuleiro) === true){
                         await originalmsg.delete().catch(err => {})
+                        addWinner(toplay, 'Vel', infos)
                         await displayDraw(who,esc).then(async () => {
                             await message.channel.send({content:`||${mark}||`,embeds:[ImageEmbed(),winnerEmbed(client.users.cache.get(toplay[0]).username,rounds)], files:[attachments] })
                         })
@@ -129,6 +139,7 @@ module.exports = async (playexrs,GAME_INFO,client,message) => {
                         await newRound(who, esc)
                     }
                 }else{
+                    tie(toplay, 'Vel', infos)
                     let who = players.player1.id === full.author.id ? players.player1.type : players.player2.type
                     await displayDraw(who,esc)
                     await message.channel.send({content:`||${mark}||`,embeds:[drawEmbed()], files:[attachments] })

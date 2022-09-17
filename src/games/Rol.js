@@ -1,5 +1,7 @@
+const { insight } = require('../reuse/functions')
 const { turn, removePlayer, shuffling, luckyNot, russaEnd, shoot } = require('../reuse/games/russaConfigs')
 module.exports = async (x,GAME_INFO,client,message) => {
+    insight('RoletaRussa', true, 'games')
     let tambor = [null,null,null,null,null,true]
     let slot = 0
     let action 

@@ -6,12 +6,14 @@ const { checkConfigs } = require('../reuse/config/config')
 module.exports = {
     name:'guia',
     async execute(message,args, client, input1, input2, userId){
+        insight('TutorialDisableTotal')
         let games = JSON.parse(fs.readFileSync('./src/dataBase/games/GamesDone.json'))
         let corrector = (s) => {
             return s.charAt(0).toUpperCase() + s.slice(1)
         }
         input1 = corrector(input1)
         if(games[input1] === undefined){
+            insight('TutorialDisableFail')
             return message.channel.send({embeds:[error_embed(`Nenhum jogo encontrado na sigla: "${input1}"`)]}).catch( err => {})
         }
         checkConfigs(userId, input1)

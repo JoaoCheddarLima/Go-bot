@@ -5,13 +5,17 @@ const { insight } = require('../reuse/functions')
 const { InvitingEmbed, JoinEmbed } = require('../reuse/games/mathquestions.js')
 const {EmbedBuilder, AttachmentBuilder} = require('discord.js')
 const { error_embed } = require('../reuse/error-embed')
-const { checkConfigs } = require('../reuse/config/config')
+const { checkConfigs, checkServerConfigs, registerUses } = require('../reuse/config/config')
+const { callAdmin } = require('../reuse/games/global')
 
 module.exports = {
     name:"jogar",
     async execute(message,args, client, input1, input2, userId){
         //data collector
-        insight('jogar')
+        insight('GameMenu')
+        if(checkServerConfigs(message) === false){
+            return message.channel.send({embeds:[callAdmin()]})
+        }else{ registerUses(message) }
         //variables
         let GAME_INFO = {
             caller:'',
@@ -62,12 +66,14 @@ module.exports = {
         }
         //games executor
             let startGame = async () => {
+                insight('GamesPlayed')
                 await originalmsg.delete().catch(err => {})
                 const game = require(`../games/${game_choosed}`)
                 game(players,GAME_INFO,client,message)
             }
         //menu selecionar jogos
         let GAME_MENU = async () => {
+            insight(GAME_INFO.type, true, 'mostPlayed')
             collected = ''
             for(key in games){
                 games_message = games_message + `${blacked}${reactions[values-1]} - ${games[key].nome}${blacked}\n`
@@ -210,7 +216,7 @@ module.exports = {
             .setDescription(`${text}`)
             .setColor('#adff2f')
             .setFooter({text:`📌 Reaja aqui em baixo ⬇⬇`})
-            originalmsg = await message.channel.send({embeds:[embed]})
+            originalmsg = await message.channel.send({content:`||<@${userA}>||`,embeds:[embed]})
 
             for(let i = 0; i < 2; i++){
                 await originalmsg.react(`${reactions[i]}`)
@@ -245,7 +251,8 @@ module.exports = {
                     GAME_INFO.options = 'N/A'
                     GAME_INFO.players.push(userId)
                     originalmsg.edit({embeds:[InvitingEmbed(GAME_INFO.caller)]})
-                    .then(() =>{
+                    .then(async () =>{
+                        await originalmsg.reactions.removeAll().catch(err => {})
                         originalmsg.react('😳')
                         .then(()=>{
                             const filter = (reaction, user) => {
@@ -254,7 +261,7 @@ module.exports = {
                                     if(user.bot){
                                         return false
                                     }
-                                    username = await originalmsg.channel.send({embeds:[JoinEmbed(client.users.cache.get(user.id).username)]})
+                                    username = await originalmsg.channel.send({content:"||@here||",embeds:[JoinEmbed(client.users.cache.get(user.id).username)]})
                                     players.push(user.id)
                                     GAME_INFO.players.push(user.id)
                                 }
@@ -272,7 +279,10 @@ module.exports = {
                             const collector = originalmsg.createReactionCollector({ filter, time: 15000, max:10 });
                             collector.on('collect', (reaction, user) => {
                             })
-                            collector.on('end', collected => {
+                            collector.on('end',async collected => {
+                                await originalmsg.reactions.removeAll()
+                                originalmsg.react('1️⃣')
+                                originalmsg.react('2️⃣')
                                 GAME_MENU()
                             });  
                         })

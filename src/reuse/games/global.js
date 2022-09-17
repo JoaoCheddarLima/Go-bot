@@ -7,6 +7,37 @@ const colors = {
     verde:"#00FF00",
     vermelho:"FF0000"
 }
+this.notRegistered = () => {
+    const embed = new EmbedBuilder()
+    .setColor(colors.vermelho)
+    .setFooter({text:'❌ Este não é um canal de jogos! ❌'})
+    return embed
+}
+
+this.callAdmin = () => {
+    const embed = new EmbedBuilder()
+    .setColor(colors.amarelo)
+    .setFooter({text:'❌ Ops, isso não é permitido aqui, contate um adm para que ele registre este canal utilizando g!reg'})
+    return embed
+}
+
+this.notPermissions = () => {
+    const embed = new EmbedBuilder()
+    .setColor(colors.vermelho)
+    .setFooter({text:'❌ Sem permissão para fazer isso!'})
+    return embed
+}
+
+this.registerPrompt = (type) => {
+    const embed1 = new EmbedBuilder()
+    .setColor(colors.verde)
+    .setFooter({text:'✅ Canal registrado, agora podemos jogar aqui!'})
+    const embed2 = new EmbedBuilder()
+    .setColor(colors.vermelho)
+    .setFooter({text:'❌ Canal já está registrado, atualmente não há um comando para remover, porém pode entrar em contato com o suporte para remover'})
+    return type === true? embed1 : embed2
+}
+
 this.quitEmbed = (username) => {
     const embedtogo = new EmbedBuilder()
     .setColor('FF0000')

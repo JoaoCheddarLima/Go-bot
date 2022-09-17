@@ -1,3 +1,5 @@
+const { addGamePoints } = require('../reuse/config/data.js')
+const { insight } = require('../reuse/functions.js')
 const { GenQuestions, QuestionEmbed, CorrectAnswer, GameOverEmbed, PauseEmbed, LevelUpEmbed} = require('../reuse/games/mathquestions.js')
 module.exports = async (players,GAME_INFO,client,message) => {
 let tabela_pontos = {}
@@ -8,8 +10,15 @@ let points = 0
 let LEVEL_UP = false
 let level = 1
 let round = 1 
+let infos = {
+    jogos: 1,
+    points: 0,
+    level: 0,
+    rounds: 0,
+}
 
 let gameGen = async () => {    
+    insight('MathGame1', true, 'games')
     let newquestion = GenQuestions(level, 'sum')
 
         if(round === 1){
@@ -44,8 +53,8 @@ let gameGen = async () => {
         };
 
         questionmsg.channel.awaitMessages({ filter, max: 1, time: 20000 + level * 10000, errors: ['time'] })
-        .then(collected => {
-
+        .then(async collected => {
+            await questionmsg.delete().catch(err => {})
             tabela_pontos[correct.author.id].points += newquestion.result
             points += newquestion.result
             round++
@@ -62,6 +71,14 @@ let gameGen = async () => {
             })
             .then(() => gameGen())
         }).catch(collected => {
+            questionmsg.delete().catch(err => {})
+            for(key in tabela_pontos){
+                infos.level = level
+                infos.points = tabela_pontos[key].points
+                console.log(tabela_pontos[key])
+                infos.rounds = round
+                addGamePoints(key,'Mat',infos)
+            }
             message.channel.send({embeds: [GameOverEmbed(newquestion.result, points, round, level, GAME_INFO)]})
         });
     }

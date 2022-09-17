@@ -1,4 +1,16 @@
 {
-  "jogar": 644,
-  "ajuda": 9
+  "jogar": 659,
+  "GameMenu": 31,
+  "GamesPlayed": 21,
+  "games": {
+    "ForcaGame": 14,
+    "MathGame2": 2,
+    "MathGame1": 12
+  },
+  "mostPlayed": {
+    "solo": 20,
+    "grupo": 2
+  },
+  "Support": 1,
+  "CanalRegistrado": 3
 }

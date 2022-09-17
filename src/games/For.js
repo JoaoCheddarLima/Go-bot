@@ -1,12 +1,19 @@
 const fs = require('fs')
+const { addGamePoints } = require('../reuse/config/data')
+const { insight } = require('../reuse/functions')
 const { questionEmbed, turnChangeEmbed, endGameEmbed, loseHp, playAgain } = require('../reuse/games/forcaquestions')
 const { quitEmbed } = require('../reuse/games/global')
 const { JoinEmbed } = require('../reuse/games/mathquestions')
 const questions = JSON.parse(fs.readFileSync('./src/database/games/questions.json'))
 
 module.exports = async (babe,GAME_INFO,client,message) => {
+insight('ForcaGame', true, 'games')
 //variables
 let gone = []
+let infos = {
+    "acertos": 0,
+    "jogos": 1
+}
 let reply = false
 let questions = JSON.parse(fs.readFileSync('./src/dataBase/games/questions.json'))
 let msgtoedit 
@@ -62,6 +69,14 @@ let newQuestion = () => {
 }
 //GAME SYSTEMS
 let allDeath = async (win) => {
+    await msgtoedit.delete().catch(err => {})
+    if(win === true){
+        infos.acertos = 1
+    }
+    for(key of GAME_INFO.players){
+        addGamePoints(key, 'For', infos)
+    }
+    infos.acertos = 0
     let embed = playAgain(prashe, '', win)
     let originalmsg = await message.channel.send({embeds:[embed]})
     let nowplaying = []
@@ -145,7 +160,6 @@ let game = async () => {
             display = String(display.reduce((x,y) => x += y,''))
             display = display + '・'
         }else{
-            linha++
             display = display +discover[i] + ' ' 
         }
     }

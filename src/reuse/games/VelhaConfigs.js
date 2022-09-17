@@ -1,10 +1,25 @@
 const {EmbedBuilder, AttachmentBuilder} = require('discord.js')
+const { addGamePoints } = require('../config/data')
 const colors = {
     amarelo:"#adff2f",
     roxo:"#7600bc",
     azul:"0000FF",
     verde:"#00FF00",
     vermelho:"FF0000"
+}
+this.addWinner = (toplay, gameName, infos) => {
+    infos.wins = 1
+    addGamePoints(toplay[0], gameName, infos)
+    infos.wins = 0
+    infos.losses = 1
+    addGamePoints(toplay[1], gameName, infos)
+    infos.losses = 0
+}
+this.tie = (toplay, gameName, infos) => {
+    infos.empates = 1
+    for(key of toplay){
+        addGamePoints(key, gameName, infos)
+    }
 }
 this.winnerEmbed = (playerName, jogadas) => {
     const embed = new EmbedBuilder()
