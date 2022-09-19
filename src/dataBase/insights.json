@@ -1,6 +1,6 @@
 {
   "jogar": 659,
-  "GameMenu": 31,
+  "GameMenu": 33,
   "GamesPlayed": 21,
   "games": {
     "ForcaGame": 14,
@@ -11,6 +11,6 @@
     "solo": 20,
     "grupo": 2
   },
-  "Support": 1,
+  "Support": 2,
   "CanalRegistrado": 3
 }
