@@ -1,16 +1,19 @@
 {
   "jogar": 659,
-  "GameMenu": 33,
-  "GamesPlayed": 21,
+  "GameMenu": 45,
+  "GamesPlayed": 30,
   "games": {
-    "ForcaGame": 14,
-    "MathGame2": 2,
-    "MathGame1": 12
+    "ForcaGame": 15,
+    "MathGame2": 4,
+    "MathGame1": 12,
+    "RoletaRussa": 2,
+    "VelhaGame": 4
   },
   "mostPlayed": {
-    "solo": 20,
-    "grupo": 2
+    "solo": 22,
+    "grupo": 3,
+    "duo": 7
   },
   "Support": 2,
-  "CanalRegistrado": 3
+  "CanalRegistrado": 4
 }

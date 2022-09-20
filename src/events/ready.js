@@ -6,7 +6,7 @@ module.exports = {
 	execute(client){
 		let servers = (client.guilds.cache.map(g => g.name).length)
 		x = 'servidor'
-		const channel = client.channels.cache.get("1019089829297922149");
+		const channel = client.channels.cache.get("1013576342723366982");
 		if(servers > 1){
 			x = 'servidores'
 		}

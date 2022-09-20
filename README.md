@@ -58,8 +58,8 @@ Para abrir este projeto você necessita das seguintes ferramentas:
 --> <a href="https://nodejs.org/en/">NodeJS</a>
 
 ## 🗃 Histórico de lançamentos
-
-
+* 1.4.1 - 20/09/2022
+    * Correção de erros
 * 1.4.0 - 17/09/2022
     * Primeiro lançamento adequado
 

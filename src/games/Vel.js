@@ -129,7 +129,14 @@ module.exports = async (playexrs,GAME_INFO,client,message) => {
                     escolha(esc, who)
                     if(checkWin(who, tabuleiro) === true){
                         await originalmsg.delete().catch(err => {})
-                        addWinner(toplay, 'Vel', infos)
+                        let addarr = []
+                        addarr.push(toplay[0])
+                        for(key of temp){
+                            if(key !== toplay[0]){
+                                addarr.push(key)
+                            }
+                        }
+                        addWinner(addarr, 'Vel', infos)
                         await displayDraw(who,esc).then(async () => {
                             await message.channel.send({content:`||${mark}||`,embeds:[ImageEmbed(),winnerEmbed(client.users.cache.get(toplay[0]).username,rounds)], files:[attachments] })
                         })

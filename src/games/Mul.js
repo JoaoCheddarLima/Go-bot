@@ -1,3 +1,4 @@
+const { addGamePoints } = require('../reuse/config/data.js')
 const { insight } = require('../reuse/functions.js')
 const { GenQuestions, QuestionEmbed, CorrectAnswer, GameOverEmbed, PauseEmbed, LevelUpEmbed} = require('../reuse/games/mathquestions.js')
 module.exports = async (players,GAME_INFO,client,message) => {
