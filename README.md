@@ -1,6 +1,6 @@
 # GO!BOT
 
-## Integrantes: <a href="https://www.linkedin.com/in/joao-vitor-ribeiro-de-lima-dev/">João Vitor Ribeiro</a>
+## Colaboradores: <a href="https://www.linkedin.com/in/joao-vitor-ribeiro-de-lima-dev/">João Vitor Ribeiro</a>
 
 ## Descrição
 📜 O projeto GO! é um projeto a fim de testar habilidades e conhecimentos de NodeJS e javascript de modo que os Integrantes desenvolvam jogos de chat interativos utilizando os conhecimentos da linguagem javascript
