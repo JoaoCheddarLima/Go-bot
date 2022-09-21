@@ -23,6 +23,7 @@
     "@discordjs/rest": "^1.1.0",
     "@napi-rs/canvas": "^0.1.29",
     "canvas": "^2.9.3",
+    "chart.js": "^3.9.1",
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.1"
   }

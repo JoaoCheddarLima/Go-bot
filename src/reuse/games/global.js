@@ -7,6 +7,12 @@ const colors = {
     verde:"#00FF00",
     vermelho:"FF0000"
 }
+this.justAText = (text) => {
+    const embed = new EmbedBuilder()
+    .setColor('#FFFFFF')
+    .setFooter({text:text})
+    return embed
+}
 this.notRegistered = () => {
     const embed = new EmbedBuilder()
     .setColor(colors.vermelho)
@@ -52,10 +58,18 @@ this.PlayAgain = (username) => {
     return embed
 }
 
-this.ImageEmbed = () => {
+this.ImageEmbed = (name) => {
     const embed = new EmbedBuilder()
     .setColor('#000000')
     .setImage(`attachment://test.png`)
+    return embed
+}
+
+this.ImageEmbed2 = (name) => {
+    const embed = new EmbedBuilder()
+    .setColor('#000000')
+    .setImage(`attachment://${name}`)
+    .setFooter({text:'📌 Atualização automatica'})
     return embed
 }
 
