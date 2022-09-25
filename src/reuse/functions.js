@@ -1,5 +1,9 @@
 const fs = require('fs')
 let path = './src/database'
+
+this.delete_msg = (msg) => {
+    msg.delete().catch(err => {})
+}
 this.insight = (name, obj, objname) => {
     let insights = JSON.parse(fs.readFileSync(`${path}/insights.json`))
     if(obj === true){

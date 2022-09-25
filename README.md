@@ -10,7 +10,7 @@
 </p>
 
 
-💡 O projeto impacta em um melhor conhecimento da linguagem devido a prática e pesquisa constante, estimula leitura de documentação da linguagem (javascript), leitura de bibliotecas(Discord.js, JSON, fs) e desenvolvimento de dataBase local.
+💡 O projeto impacta em um melhor conhecimento da linguagem devido a prática e pesquisa constante, estimula leitura de documentação da linguagem (javascript), leitura de bibliotecas(Discord.js, JSON, fs, chart.js) e desenvolvimento de dataBase local.
 <br><br>
 ## 🛠 Estrutura de pastas
 -Raiz<br>
@@ -18,6 +18,8 @@
 |-->src<br>
   &emsp;|-->commands<br>
   &emsp;|-->dataBase<br>
+  &emsp;|-->dataGraphs<br>
+  &emsp;|-->economy<br>
   &emsp;|-->events<br> 
   &emsp;|-->games<br>
   &emsp;|-->reuse<br>
@@ -58,13 +60,24 @@ Para abrir este projeto você necessita das seguintes ferramentas:
 --> <a href="https://nodejs.org/en/">NodeJS</a>
 
 ## 🗃 Histórico de lançamentos
+* 1.6.0 - 25/08/2022
+    * Economia criada.
+    * Adicionado daily.
+    * Agora opta por uso de botões em vez de reações (ainda em processo de mudança).
+    * Correção de erros da versão anterior.
+* 1.5.0 - ----------
+    * Adicionada análise gráfica de atividade.
+    * Adicionado chart.js.
 * 1.4.1 - 20/09/2022
-    * Correção de erros
+    * Correção de erros.
 * 1.4.0 - 17/09/2022
-    * Primeiro lançamento adequado
+    * Primeiro lançamento adequado.
 
 # 📌 Comandos existentes
 <ul>
+  <li>
+    g!daily   ----> recebe o valor fixo de moedas de ouro por dia 🔸
+  </li>
   <li>
     g!jogar   ---> abre o menu de jogos 🔸
   </li>

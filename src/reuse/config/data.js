@@ -6,9 +6,8 @@ this.checkUser = (userid) => {
     let data = JSON.parse(fs.readFileSync(path))
     if(data[userid] === undefined){
         data[userid] = {
-            "gamedata":{
-
-            }
+            "gamedata":{},
+            bal:0
         }
         return fs.writeFileSync(path, JSON.stringify(data, null, 2));
     }

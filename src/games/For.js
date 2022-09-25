@@ -267,7 +267,7 @@ let game = async () => {
             temp.splice(temp.indexOf(toplay[0]),1)
             if(temp.length === 0){
                 await oldturn.delete().catch(err => {})
-                await originalmsg.delete.catch(err => {})
+                await originalmsg.delete().catch(err => {})
                 allDeath()
                 return
             }else{

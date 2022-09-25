@@ -3,6 +3,12 @@ module.exports = {
 	execute(message, client){
 		if (message.author.bot) return;
 		if (message.channel.type == 'dm') return;
+		if(message.content === '<@963119439832834088>'){
+			const command = client.commands.get('ajuda');
+			try {
+				command.execute(message,'x',client)
+			} catch(err){console.log(err)}
+		}
 		if (!message.content.startsWith(client.prefix));
 
 	const args = message.content.slice(client.prefix.length).trim().split(/ +/)
@@ -10,7 +16,6 @@ module.exports = {
 	const input1 = args[1]
 	const input2 = args[2]
 	const userId = message.author.id
-	let type = 'message'
 	const commandName = args.shift().toLowerCase();
 
 	if(!client.commands.has(commandName)) return;

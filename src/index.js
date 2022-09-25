@@ -7,8 +7,6 @@ require('dotenv').config()
 	myIntents.add(IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.GuildMessageReactions, IntentsBitField.Flags.MessageContent)
 	const client = new Client({ intents: myIntents });
 
-	console.table(myIntents.toArray())
-
 client.prefix = 'g!'
 client.commands = new Discord.Collection();
 client.login(process.env.BOT_KEY);

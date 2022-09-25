@@ -1,12 +1,12 @@
 const fs = require('fs')
 let path = './src/database/'
-const Canvas = require('@napi-rs/canvas')
 const { insight } = require('../reuse/functions')
 const { InvitingEmbed, JoinEmbed } = require('../reuse/games/mathquestions.js')
-const {EmbedBuilder, AttachmentBuilder} = require('discord.js')
+const {EmbedBuilder} = require('discord.js')
 const { error_embed } = require('../reuse/error-embed')
 const { checkConfigs, checkServerConfigs, registerUses } = require('../reuse/config/config')
-const { callAdmin } = require('../reuse/games/global')
+const { callAdmin, menu, gameChooseEmbed } = require('../reuse/games/global')
+const { idBuilder, buttons, button } = require('../reuse/config/buttons')
 
 module.exports = {
     name:"jogar",
@@ -33,14 +33,10 @@ module.exports = {
         let error = false
         let collected
         let blacked = '```'
-        let correct 
         let originalmsg
-        let attachment
         let embed
         let userA = userId  
         let userB 
-        let userA_Name
-        let userB_Name
         let players = []
         //switches
         try{
@@ -72,57 +68,126 @@ module.exports = {
                 game(players,GAME_INFO,client,message)
             }
         //menu selecionar jogos
-        let GAME_MENU = async () => {
+        let GLOBAL_SELECTOR = async () => {
+            let text = `♦ Escolha um modo de jogo ♦`
+            const [id1,id2] = [idBuilder(3), idBuilder(3)]
+            let config = {
+                text:['😎 Sozinho', '🌎 Grupo'],
+                id:[id1,id2]
+            }
+            originalmsg = await message.channel.send({
+                components:[buttons(config, 2)],
+                content:`||<@${userA}>||`,embeds:[menu(text)]
+            })
+            const filter = i => {
+                collected = i.customId
+                return config.id.some((e => e === i.customId)) === true && i.user.id === message.author.id
+            }
+            const collector = message.channel.createMessageComponentCollector({ filter, time: 15000, max:1 });
+    
+            collector.on('collect', async i => {
+                if(collected === id1){
+                    players.push(userId)
+                    GAME_INFO.type = 'solo'
+                    GAME_INFO.input1 = 'N/A'
+                    GAME_INFO.caller = userId
+                    GAME_INFO.options = 'N/A'
+                    GAME_INFO.players = [`${userId}`]
+                    GAME_MENU(i)
+                }
+                if(collected === id2){
+                    players.push(userId)
+                    GAME_INFO.type = 'grupo'
+                    GAME_INFO.input1 = 'N/A'
+                    GAME_INFO.caller = userId
+                    GAME_INFO.options = 'N/A'
+                    GAME_INFO.players.push(userId)
+                    config = {
+                        text:'Entrar no grupo',
+                        id:idBuilder(4)
+                    }
+                    await i.update({components:[button(config)],embeds:[InvitingEmbed(GAME_INFO.caller)]})
+                    .then(async () =>{
+                            const filter = int => {
+                                console.log(i.user.id)
+                            let gather = async (int) => {
+                                if(int.user.bot){
+                                    return false
+                                    }
+                                players.push(i.user.id)
+                                GAME_INFO.players.push(i.user.id)
+                                }
+                                add = true
+                                for(let i = 0; i < players.length; i++){
+                                    if(int.user.id === players[i]){
+                                        add = false
+                                    }
+                                }
+                                if(add === true){
+                                    gather(int)
+                                }else{
+                                    int.reply({embeds:[error_embed('Você já está na lista de jogadores!')], ephemeral:true})
+                                }
+                                return add === true;
+                            };
+                        const collector = message.channel.createMessageComponentCollector({ filter, time: 15000, max:10 });
+                        collector.on('collect', async i => {
+                            await originalmsg.channel.send({
+                                embeds:[JoinEmbed(client.users.cache.get(i.user.id).username)]
+                            })
+                        })
+                        collector.on('end', collected => GAME_MENU(i));
+                    })
+                }
+            });
+            collector.on('end', collected => {});
+        }
+        let GAME_MENU = async (i) => {
             insight(GAME_INFO.type, true, 'mostPlayed')
             collected = ''
+            let configs = {
+                id:[],
+                text:[]
+            }
             for(key in games){
                 games_message = games_message + `${blacked}${reactions[values-1]} - ${games[key].nome}${blacked}\n`
                 game_options[`${values}`] = games[key].shortcut
+                configs.id.push(games[key].shortcut)
+                configs.text.push(String(values))
                 values++
             }
-
-            embed = new EmbedBuilder()
-            .setDescription(`🎈 <@${GAME_INFO.caller}> escolha um jogo!! 🎈\n\n${games_message}`)
-            .setColor('#adff2f')
-            .setFooter({text:`📌 Reaja aqui em baixo ⬇⬇`})
-            originalmsg.edit({embeds: [embed]}).then(async original => {
-                for(let i = 2; i < reactions.length; i++){
-                    await original.react(reactions[i])
-                }
-            })
-            const filter = async (reaction, user) => {
-                if(reactions.indexOf(reaction.emoji.name) !== -1 && user.id === (GAME_INFO.caller)){
-                    if(game_options[reactions.indexOf(reaction.emoji.name)+1] === 'Vel' && GAME_INFO.type !== 'duo'){
-                        await message.channel.send('Este jogo é apenas para dois jogadores')
-                        return
+            await i.update({components:[buttons(configs, values-1)],embeds: [gameChooseEmbed(GAME_INFO.caller,games_message )]})
+            const filter = async i => {
+                if(configs.id.indexOf(i.customId) !== -1 && i.user.id === (GAME_INFO.caller)){
+                    if(game_options[configs.id.indexOf(i.customId)+1] === 'Vel' && GAME_INFO.type !== 'duo'){
+                        await i.reply({embeds:[error_embed('este jogo é apenas para dois jogadores')], ephemeral:true})
+                        return false
                     }
-                    if(game_options[reactions.indexOf(reaction.emoji.name)+1] === 'Rol' && GAME_INFO.type == 'solo'){
-                        await message.channel.send('Este não pode ser jogado sozinho...')
-                        return
+                    if(game_options[configs.id.indexOf(i.customId)+1] === 'Rol' && GAME_INFO.type == 'solo'){
+                        await i.reply({embeds:[error_embed('este jogo não pode ser jogado sozinho')], ephemeral:true})
+                        return false
                     }
-                    collected = reaction.emoji.name
+                    collected = i.customId
                     return true
                 }
                 return false
             };
-            const collector = originalmsg.createReactionCollector({ filter, time: 30000, max:1 });
-            collector.on('collect', async (reaction, user) => {
-                    let getnum = reactions.indexOf(collected)+1
+            const collector = message.channel.createMessageComponentCollector({ filter, time: 30000, max:1 });
+            collector.on('collect', async i => {
+                    let getnum = configs.id.indexOf(collected)+1
                     game_choosed = game_options[getnum]
                     const userOptions = JSON.parse(fs.readFileSync('./src/reuse/config/userOptions.json'))
                     checkConfigs(GAME_INFO.caller, game_choosed)
                     if(userOptions[GAME_INFO.caller][game_choosed] === true){
-                    originalmsg.reactions.removeAll().catch(err => {})
                     let segundos = 15
                     embed = new EmbedBuilder()
                     .setDescription(`${games[game_choosed].guideText}`)
                     .setColor(`${games[game_choosed].cor}`)
                     .setFooter({text:`⭐ Dica: você pode desativar este guia rápido digitando g!guia ${game_options[getnum]} e ativar novamente utilizando g!guia ${game_options[getnum]} ⭐`})
-                    originalmsg.edit({embeds: [embed]})
+                    originalmsg.edit({components:[],embeds: [embed]})
                     setTimeout(() => {
-                        startGame();
-                        originalmsg.delete()
-                        .catch((err)=>{})}, segundos * 1000)
+                        startGame()
+                    }, segundos * 1000)
                     }else{
                         startGame()
                     }
@@ -137,160 +202,26 @@ module.exports = {
             GAME_INFO.caller = userId
             GAME_INFO.options = 'N/A'
             GAME_INFO.players = players
-            const filter = (reaction, user) => {
-                return reaction.emoji.name === '👍' && '✔️' && user.id === (userB);
-            };
-            const canvas = Canvas.createCanvas(266, 128)
-            const ctx = canvas.getContext('2d')
-            async function firstbabe(){
-                try {
-                    //checks
-                    await client.users.fetch(userId).catch((err) => {return message.channel.send({embeds:[error_embed('por favor marque um usuário válido')]}).then(() => message.delete().catch((err) => {console.error(err)}))})
-                    await client.users.fetch(input1.slice(2).slice(0,-1)).catch((err) => {
-                        error = true; 
-                        return message.channel.send({embeds:[error_embed('Usuário inexistente')]}).catch((err)=> {})
-                    })
-                    .then(()=>message.delete().catch((err) => {}))
-                    if(error == true) return
-                    
-                    //canvas
-                    const avatar1 = await Canvas.loadImage(client.users.cache.get(userA).displayAvatarURL({ format: 'jpg', size:512})).catch((err)=>{console.error(err)})
-                    ctx.drawImage(avatar1, 0, 0, 128, 128)
-                    const avatar2 = await Canvas.loadImage(client.users.cache.get(userB).displayAvatarURL({ format: 'jpg', size:512})).catch((err)=>{console.error(err)})
-                    ctx.drawImage(avatar2, 138, 0, 128, 128)
-                    const reaction = await Canvas.loadImage('./src/dataBase/assets/vs.png')
-                    ctx.drawImage(reaction, 0, 0, 266, 128)
-                    const border = await Canvas.loadImage('./src/dataBase/assets/border.png')
-                    ctx.drawImage(border, 0, 0, 266, 128)
-                    attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'test.png' });
-                } catch (err){ 
-                    console.log(err);return await message.channel.send({content: `Error 0 - Canvas image`})
-                    .then(()=>{error = true}) 
-                }
+            const configs = {
+                id:idBuilder(3),
+                text:'✅ Aceitar'
             }
-                await firstbabe()
-                if(error == true) return
+            const filter = i => {
+                return i.customId === configs.id && i.user.id === (userB);
+            };
                 embed = new EmbedBuilder()
-                    .setDescription(`👋 Olá <@${userB}> 🎈\n♦ <@${userA}> está te convidando para jogar!! ♦ \n\n⭐ Clique no 👍 para jogar junto ou contra ele(a) ⭐`)
-                    .setColor('#FF0000')
-                    .setImage(`attachment://test.png`)
-                    .setFooter({text:`📌Dica: para iniciar sem passar nos menus digite g!jogar @usuario nome_do_jogo, exemplo: g!jogar @matheusFortnite matgame\n📌Para consultar os nomes dos jogos digite g!ids`})
-                    try{
-                    message.channel.send({content:`||<@${userB}>,<@${userA}>||`,embeds: [embed], files:[attachment] }).then(msg => {
-                        originalmsg = msg
-                        msg.react('👍').then(() => {
-                    //espera a resposta do desafiado
-                    const collector = msg.createReactionCollector({ filter, time: 30000, max:1 });
+                .setColor('#FF0000')
+                .setFooter({text:`🔸 Oi, ${client.users.cache.get(userB).username}, Você está sendo convidado para jogar em dupla 😳`})
+                const collector = message.channel.createMessageComponentCollector({ filter, time: 15000, max:1 });
+                originalmsg = await message.channel.send({content:`||<@${userB}>,<@${userA}>||`,embeds: [embed], components:[button(configs)] })
     
-                    collector.on('collect', async (reaction, user) => {
-                        originalmsg.removeAttachments()
-                        await originalmsg.reactions.removeAll().catch(err => {})
-                        for(let i = 0; i < 2; i++){
-                            await originalmsg.react(`${reactions[i]}`)
-                        }
-                        GAME_MENU()
-                    });
-                    collector.on('end', collected => {
-                    });
-                })})
-                }
-                catch(err){
-                    console.log(err)
-                    message.channel.send('Error 1 - Sending message')
-                }
-        }
-        //menu SOLO/GERAL
-        if(input1 === undefined){
-
-            let reactions = ['1️⃣','2️⃣']
-            let GAME_MODES = [
-                "1️⃣ Sozinho",
-                "2️⃣ Aberto a todos (no canal)"
-            ]
-            let text = `♦ Escolha um modo de jogo ♦\n\n`
-
-            for(let i = 0; i < GAME_MODES.length; i++){
-                text = text + `${blacked}${GAME_MODES[i]}${blacked}\n`
-            }
-            embed = new EmbedBuilder()
-            .setDescription(`${text}`)
-            .setColor('#adff2f')
-            .setFooter({text:`📌 Reaja aqui em baixo ⬇⬇`})
-            originalmsg = await message.channel.send({content:`||<@${userA}>||`,embeds:[embed]})
-
-            for(let i = 0; i < 2; i++){
-                await originalmsg.react(`${reactions[i]}`)
-            }
-
-            const filter = (reaction, user) => {
-                collected = reaction.emoji.name
-                correct = false
-                for(let i = 0; i < reactions.length; i++){
-                    if(reaction.emoji.name === reactions[i]){
-                        correct = true
-                    }
-                }
-                return correct === true && user.id === (userA);
-            };
-            const collector = originalmsg.createReactionCollector({ filter, time: 30000, max:1 });
-            collector.on('collect', (reaction, user) => {
-                if(collected === '1️⃣'){
-                    players.push(userId)
-                    GAME_INFO.type = 'solo'
-                    GAME_INFO.input1 = 'N/A'
-                    GAME_INFO.caller = userId
-                    GAME_INFO.options = 'N/A'
-                    GAME_INFO.players = [`${userId}`]
-                    GAME_MENU()
-                }
-                if(collected === '2️⃣'){
-                    players.push(userId)
-                    GAME_INFO.type = 'grupo'
-                    GAME_INFO.input1 = 'N/A'
-                    GAME_INFO.caller = userId
-                    GAME_INFO.options = 'N/A'
-                    GAME_INFO.players.push(userId)
-                    originalmsg.edit({embeds:[InvitingEmbed(GAME_INFO.caller)]})
-                    .then(async () =>{
-                        await originalmsg.reactions.removeAll().catch(err => {})
-                        originalmsg.react('😳')
-                        .then(()=>{
-                            const filter = (reaction, user) => {
-                                let username = ''
-                                let gather = async () => {
-                                    if(user.bot){
-                                        return false
-                                    }
-                                    username = await originalmsg.channel.send({content:"||@here||",embeds:[JoinEmbed(client.users.cache.get(user.id).username)]})
-                                    players.push(user.id)
-                                    GAME_INFO.players.push(user.id)
-                                }
-                                add = true
-                                for(let i = 0; i < players.length; i++){
-                                    if(user.id === players[i]){
-                                        add = false
-                                    }
-                                }
-                                if(add === true){
-                                    gather()
-                                }
-                                return add === true;
-                            };
-                            const collector = originalmsg.createReactionCollector({ filter, time: 15000, max:10 });
-                            collector.on('collect', (reaction, user) => {
-                            })
-                            collector.on('end',async collected => {
-                                await originalmsg.reactions.removeAll()
-                                originalmsg.react('1️⃣')
-                                originalmsg.react('2️⃣')
-                                GAME_MENU()
-                            });  
-                        })
-                    })
-                }
-            })
-            collector.on('end', collected => {
-            });  
+                collector.on('collect', async i => {
+                    GAME_MENU(i)
+                });
+                collector.on('end', collected => {
+                });
+        }else{
+            GLOBAL_SELECTOR()
         }
     }
 }

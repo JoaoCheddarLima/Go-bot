@@ -7,9 +7,24 @@ const colors = {
     verde:"#00FF00",
     vermelho:"FF0000"
 }
-this.justAText = (text) => {
+this.gameChooseEmbed = (caller, message) => {
+    embed = new EmbedBuilder()
+    .setDescription(`🎈 <@${caller}> escolha um jogo!! 🎈\n\n${message}`)
+    .setColor('#adff2f')
+    return embed
+}
+
+this.menu = (text) => {
     const embed = new EmbedBuilder()
-    .setColor('#FFFFFF')
+    .setDescription(`${text}`)
+    .setColor('#adff2f')
+    .setFooter({text:`📌 Faça sua escolha`})
+    return embed
+}
+
+this.justAText = (text, color) => {
+    const embed = new EmbedBuilder()
+    .setColor(color === undefined? '#FFFFFF': color)
     .setFooter({text:text})
     return embed
 }

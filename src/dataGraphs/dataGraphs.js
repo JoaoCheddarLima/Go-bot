@@ -6,14 +6,13 @@ const { analize } = require("./analize");
 module.exports = async (client) => {
     const [width, height, color] = [300,300,'white']
     const chartJSNodeCanvas = new ChartJSNodeCanvas({width,height,color})
-    let text
+    let text	
+    let oldData = JSON.parse(fs.readFileSync('./src/dataGraphs/oldData/oldData.json'))
     const dados = JSON.parse(fs.readFileSync('../Nano/Nanobot/data.json'))
-
     const channel = client.channels.cache.get("1022035517753266186");
     const channel2 = client.channels.cache.get("1022035569397727313");
     const channel3 = client.channels.cache.get("1022241966274138242")
     let passDias 
-    let oldData = JSON.parse(fs.readFileSync('./src/dataGraphs/oldData/oldData.json'))
     let genGraf = (labels, info, nome, tipo)=>{
         let type = 'bar'
         const data = {

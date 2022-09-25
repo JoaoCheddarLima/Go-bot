@@ -1,6 +1,6 @@
 {
   "Mat": {
-    "nome": "Matematica quiz (soma)",
+    "nome": "Matematica +",
     "guideText": "👾 Matematica quiz (soma) 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Irei enviar as perguntas no chat♦\n♦Os jogadores tem: 30 segundos ? para responder♦\n♦Caso nao acertem dentro do tempo o jogo encerra♦",
     "cor": "#7600bc",
     "playableModes": "all",
@@ -8,7 +8,7 @@
     "infos": ["points", "level", "rounds","jogos"]
   },
   "Mul": {
-    "nome": "Multiplicar quiz",
+    "nome": "Multiplicar x",
     "guideText": "👾 Multiplicar quiz 👾\n\n⏰ Começa em 15 segundos⏰\n\n❓ Como jogar ❓\n♦Irei enviar perguntas de matematica♦\n♦Os jogadores tem 30 segundos para acertar♦\n♦O jogo caba caso ninguem acerte a tempo♦",
     "cor": "#adff2f",
     "playableModes": "all",

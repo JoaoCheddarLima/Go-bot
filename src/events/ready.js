@@ -11,9 +11,11 @@ module.exports = {
 			x = 'servidores'
 		}
 		let date = new Date()
+		/*
 		function repeater(){
 			const send = require('../dataGraphs/dataGraphs.js')
 			send(client)
+			let wait
 			let actual = Number(date.getHours())
 			if(actual === 12 || actual === 0){
 				console.log(`Mensagem automatica definida para daqui: ${43200000/3600000} ${wait === 1? 'Hora': "Horas"}`)
@@ -21,7 +23,6 @@ module.exports = {
 					repeater()
 				}, 43200000)
 			}else{
-				let wait
 				if(actual > 12){
 					wait = 3*3600000
 					console.log(`Mensagem automatica definida para daqui: ${wait/3600000} ${wait === 1? 'Hora': "Horas"}`)
@@ -34,7 +35,7 @@ module.exports = {
 				}, wait)
 			}
 		}
-		repeater()
+		repeater()*/
 		let embed = new EmbedBuilder()
 		.setColor('#00FF00')
 		.setFooter({text: `✔️ Go! está online agora em ${servers} ${x}`})
