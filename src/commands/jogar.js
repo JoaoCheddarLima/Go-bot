@@ -71,10 +71,12 @@ module.exports = {
         let GLOBAL_SELECTOR = async () => {
             let text = `♦ Escolha um modo de jogo ♦`
             const [id1,id2] = [idBuilder(3), idBuilder(3)]
+
             let config = {
                 text:['😎 Sozinho', '🌎 Grupo'],
                 id:[id1,id2]
             }
+
             originalmsg = await message.channel.send({
                 components:[buttons(config, 2)],
                 content:`||<@${userA}>||`,embeds:[menu(text)]
@@ -102,42 +104,32 @@ module.exports = {
                     GAME_INFO.caller = userId
                     GAME_INFO.options = 'N/A'
                     GAME_INFO.players.push(userId)
+                    
                     config = {
                         text:'Entrar no grupo',
-                        id:idBuilder(4)
+                        id:idBuilder(6)
                     }
+
                     await i.update({components:[button(config)],embeds:[InvitingEmbed(GAME_INFO.caller)]})
-                    .then(async () =>{
-                            const filter = int => {
-                                console.log(i.user.id)
-                            let gather = async (int) => {
-                                if(int.user.bot){
-                                    return false
-                                    }
-                                players.push(i.user.id)
-                                GAME_INFO.players.push(i.user.id)
-                                }
-                                add = true
-                                for(let i = 0; i < players.length; i++){
-                                    if(int.user.id === players[i]){
-                                        add = false
-                                    }
-                                }
-                                if(add === true){
-                                    gather(int)
-                                }else{
-                                    int.reply({embeds:[error_embed('Você já está na lista de jogadores!')], ephemeral:true})
-                                }
-                                return add === true;
-                            };
-                        const collector = message.channel.createMessageComponentCollector({ filter, time: 15000, max:10 });
-                        collector.on('collect', async i => {
-                            await originalmsg.channel.send({
-                                embeds:[JoinEmbed(client.users.cache.get(i.user.id).username)]
-                            })
-                        })
-                        collector.on('end', collected => GAME_MENU(i));
-                    })
+                    const filter = async i => {
+                        let gather = async (i) => {
+                            console.log(i.user.bot)
+                            if(i.user.bot || players.indexOf(i.user.id) !== -1) return false
+                            players.push(i.user.id)
+                            GAME_INFO.players.push(i.user.id)
+                            i.update({components:[button(config)],embeds:[InvitingEmbed(GAME_INFO.caller)]})
+                            return true
+                        }
+                        res = await gather(i)
+                        return res
+                    };
+
+                const collector = message.channel.createMessageComponentCollector({ filter, time: 15000, max:10 });
+
+                collector.on('collect', async i => {
+                    await originalmsg.channel.send({embeds:[JoinEmbed(client.users.cache.get(i.user.id).username)]})
+                })
+                collector.on('end', collected => GAME_MENU(i));
                 }
             });
             collector.on('end', collected => {});
@@ -145,10 +137,12 @@ module.exports = {
         let GAME_MENU = async (i) => {
             insight(GAME_INFO.type, true, 'mostPlayed')
             collected = ''
+
             let configs = {
                 id:[],
                 text:[]
             }
+
             for(key in games){
                 games_message = games_message + `${blacked}${reactions[values-1]} - ${games[key].nome}${blacked}\n`
                 game_options[`${values}`] = games[key].shortcut
@@ -156,7 +150,8 @@ module.exports = {
                 configs.text.push(String(values))
                 values++
             }
-            await i.update({components:[buttons(configs, values-1)],embeds: [gameChooseEmbed(GAME_INFO.caller,games_message )]})
+            await originalmsg.edit({components:[buttons(configs, values-1)],embeds: [gameChooseEmbed(GAME_INFO.caller,games_message )]})
+            
             const filter = async i => {
                 if(configs.id.indexOf(i.customId) !== -1 && i.user.id === (GAME_INFO.caller)){
                     if(game_options[configs.id.indexOf(i.customId)+1] === 'Vel' && GAME_INFO.type !== 'duo'){
@@ -172,7 +167,9 @@ module.exports = {
                 }
                 return false
             };
+
             const collector = message.channel.createMessageComponentCollector({ filter, time: 30000, max:1 });
+
             collector.on('collect', async i => {
                     let getnum = configs.id.indexOf(collected)+1
                     game_choosed = game_options[getnum]

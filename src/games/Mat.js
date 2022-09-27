@@ -1,6 +1,6 @@
 const { addGamePoints } = require('../reuse/config/data.js')
 const { insight } = require('../reuse/functions.js')
-const { GenQuestions, QuestionEmbed, CorrectAnswer, GameOverEmbed, PauseEmbed, LevelUpEmbed} = require('../reuse/games/mathquestions.js')
+const { GenQuestions, QuestionEmbed, CorrectAnswer, GameOverEmbed, PauseEmbed, LevelUpEmbed } = require('../reuse/games/mathquestions.js')
 module.exports = async (players,GAME_INFO,client,message) => {
 let tabela_pontos = {}
 let questionmsg
@@ -75,7 +75,6 @@ let gameGen = async () => {
             for(key in tabela_pontos){
                 infos.level = level
                 infos.points = tabela_pontos[key].points
-                console.log(tabela_pontos[key])
                 infos.rounds = round
                 addGamePoints(key,'Mat',infos)
             }

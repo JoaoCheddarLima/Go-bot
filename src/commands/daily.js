@@ -1,7 +1,7 @@
 const { checkupdate, dateDif} = require('../economy/facilities');
 const { checkUser } = require('../reuse/config/data');
 const { insight, delete_msg } = require('../reuse/functions');
-const { button, idBuilder } = require('../reuse/config/buttons.js');
+const { buttons, idBuilder } = require('../reuse/config/buttons.js');
 const { justAText } = require('../reuse/games/global');
 
 module.exports = {
@@ -17,11 +17,11 @@ module.exports = {
         }
 		await message.channel.send({
              components: [
-                button(config)
+                buttons(config)
             ] 
             });
         await delete_msg(message)
-        const filter = i => i.customId === config.id && i.user.id === message.author.id;
+        const filter = i => i.customId === config.id[0] && i.user.id === message.author.id;
         const collector = message.channel.createMessageComponentCollector({ filter, time: 15000, max:1 });
 
         collector.on('collect', async i => {

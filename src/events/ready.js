@@ -10,8 +10,8 @@ module.exports = {
 		if(servers > 1){
 			x = 'servidores'
 		}
-		let date = new Date()
 		/*
+		let date = new Date()
 		function repeater(){
 			const send = require('../dataGraphs/dataGraphs.js')
 			send(client)

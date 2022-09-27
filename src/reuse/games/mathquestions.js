@@ -8,11 +8,11 @@ this.JoinEmbed = (username) => {
 }
 
 this.InvitingEmbed = (caller) => {
-    let text = `♦ ATENÇÃO! ♦\n<@${caller}> está criando uma partida aberta`
+    let text = `🎈 \n<@${caller}> está convidando para jogar`
     const embedtogo = new EmbedBuilder()
     .setColor('#FF0000')
     .setDescription(`${text}`)
-    .setFooter({text: `\n♦- Encerra em 15 segundos -♦\n⬇⬇ REAJA PARA PARTICIPAR ⬇⬇`});
+    .setFooter({text: `\n🔸 -Iniciando em 15 segundos- 🔸`});
     return embedtogo
 }
 

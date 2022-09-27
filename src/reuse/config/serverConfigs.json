@@ -4,11 +4,36 @@
     "channels": {
       "1013889372426350713": {
         "allowed": true,
-        "uses": 47
+        "uses": 82
       },
       "1013576342723366982": {
         "allowed": true,
-        "uses": 14
+        "uses": 18
+      },
+      "1024108783598833715": {
+        "allowed": true,
+        "uses": 0
+      },
+      "1024108959763800204": {
+        "allowed": true,
+        "uses": 0
+      },
+      "1024109807894016010": {
+        "allowed": true,
+        "uses": 0
+      },
+      "1024109860347985990": {
+        "allowed": true,
+        "uses": 0
+      }
+    }
+  },
+  "1016057236423987280": {
+    "name": "a tropa dos calvos",
+    "channels": {
+      "1016057237279621162": {
+        "allowed": true,
+        "uses": 1
       }
     }
   }

@@ -4,18 +4,20 @@ const { insight } = require('../reuse/functions')
 const { questionEmbed, turnChangeEmbed, endGameEmbed, loseHp, playAgain } = require('../reuse/games/forcaquestions')
 const { quitEmbed } = require('../reuse/games/global')
 const { JoinEmbed } = require('../reuse/games/mathquestions')
-const questions = JSON.parse(fs.readFileSync('./src/database/games/questions.json'))
+const { getRandom } = require('../reuse/games/forca-cfgs/system')
 
 module.exports = async (babe,GAME_INFO,client,message) => {
 insight('ForcaGame', true, 'games')
 //variables
+let questions = JSON.parse(fs.readFileSync('./src/dataBase/games/questions.json'))
 let gone = []
+let prashe
+let temp = [...GAME_INFO.players]
 let infos = {
     "acertos": 0,
-    "jogos": 1
+    "jogos": 0
 }
 let reply = false
-let questions = JSON.parse(fs.readFileSync('./src/dataBase/games/questions.json'))
 let msgtoedit 
 let counter = 0
 let display = ''
@@ -24,40 +26,24 @@ let vidas = 6
 let vidaDisplay
 let reactions = ['✅','❌']
 let toplay = []
-let played = []
-let temas = []
 let opts = []
 let discover = []
-let possibilities = []
 let jogadas = []
-let players2 = []
-for(let i = 0; i < GAME_INFO.players.length; i++){
-    players2.push(GAME_INFO.players[i])
-}
-let embed
-let temaArray
-let temp = [...GAME_INFO.players]
 let tema
-let randomPrashe
-let prashe
+let embed
 let done
-//gen question -> (temas, possibilities, temaArray, randomPrashe, opts, discover) -> [questions]
-let newQuestion = () => {
-    for(key in questions){
-        possibilities.push(questions[key])
-        temas.push(key)
-    }
-    let getRandom = () => {
-        let randomTema = Math.floor(Math.random() * possibilities.length)
-        temaArray = possibilities[randomTema]
-        tema = temas[randomTema]
-        randomPrashe = Math.floor(Math.random() * temaArray.length)
-        return temaArray[randomPrashe]
-    }
-    prashe = getRandom()
+//gen question -> (opts, discover) -> [questions]
+let newQuestion = async () => {
+    let gerar = await getRandom(questions)
+    prashe = gerar['palavra']
+    tema = gerar['tema']
+
     while(gone.indexOf(prashe) !== -1){
-        prashe = getRandom()
+        gerar = await getRandom(questions)
+        prashe = gerar['palavra']
+        tema = gerar['tema']
     }
+
     for(let i = 0; i < prashe.length; i++){
         opts.push(prashe[i])
         if(prashe[i] == ' '){
@@ -66,12 +52,15 @@ let newQuestion = () => {
             discover.push('-')
         }
     }
+
+    gone.push(prashe)
 }
 //GAME SYSTEMS
 let allDeath = async (win) => {
     await msgtoedit.delete().catch(err => {})
     if(win === true){
-        infos.acertos = 1
+        infos.acertos += 1
+        infos.jogos += 1
     }
     for(key of GAME_INFO.players){
         addGamePoints(key, 'For', infos)
@@ -92,62 +81,49 @@ let allDeath = async (win) => {
         await originalmsg.channel.send({embeds:[quitEmbed(`${client.users.cache.get(user.id).username}`)]})
         return false
     };
-    const collector = originalmsg.createReactionCollector({ filter, time: 10000, max:10});
+
+    const collector = originalmsg.createReactionCollector({ filter, time: 15000, max:10});
     collector.on('collect', async (reaction, user) => {
             await originalmsg.channel.send({embeds:[JoinEmbed(`${client.users.cache.get(user.id).username}`)]})
             nowplaying.push(user.id)
     })
-    collector.on('end', collected => {
+
+    collector.on('end',async collected => {
         if(nowplaying.length === 0) return
         GAME_INFO.players = nowplaying
         reset()
-        newQuestion()
-        game()
+        await newQuestion()
+        await game()
     });
 }
+
 let turn = async (x) => {
-    if(toplay.length === 0){
-        for(let i = 0; i < x.length; i++){
-            toplay.push(x[i])
-        }
-        played = []
-    }else{
-        let removed = toplay.shift()
-        played.push(removed)
+        toplay.shift()
         if(toplay.length === 0){
             for(let i = 0; i < x.length; i++){
                 toplay.push(x[i])
             }
-            played = []
         }
-    }
 }
 let reset = () => {
+temp = GAME_INFO.players
 display = ''
 vidas = 6
 vidaDisplay = ''
 counter = 0
-reactions = ['✅','❌']
 toplay = []
-played = []
 oldturn = ''
-temas = []
 opts = []
 discover = []
-possibilities = []
-temp = [...GAME_INFO.players]
 jogadas = []
 embed = ''
-temaArray = ''
-tema = ''
-randomPrashe = ''
-prashe = ''
-done = ''
 }
-//GAME -> (response, done) -> [done, discover, jogadas, tema, response, opts]
+//game instance
 let game = async () => {
-    turn(temp)
+    await turn(temp)
     done = true
+
+    //formata a frase gerada na questão gerando um display visual melhor
     display = ''
     vidaDisplay = ''
     for(let i = 0; i < vidas; i++){
@@ -155,15 +131,19 @@ let game = async () => {
     }
     for(let i = 0; i < discover.length; i++){
         if(discover[i] === ' '){
+            //transforma em array p/ remover o ultimo elemento
             display = display.split('')
             display.pop()
+            //transforma em string denovo
             display = String(display.reduce((x,y) => x += y,''))
             display = display + '・'
         }else{
-            display = display +discover[i] + ' ' 
+            display = display + discover[i] + ' ' 
         }
     }
+
     embed = questionEmbed(tema, display, jogadas, vidaDisplay, vidas)
+
     if(counter === 3 || counter === 0){
         msgtoedit = await message.channel.send({embeds:[embed]}).catch(err => {})
         counter = 0
@@ -192,35 +172,40 @@ let game = async () => {
             counter === 1 ? counter = 1 : counter--
             return true
         }
+
         if( /^[a-z]+$/i.test(m.content) === false || m.content.length > 1) return false
         if(temp.indexOf(m.author.id) === -1) return false
         if(jogadas.indexOf(m.content.toLowerCase()) !== -1) return false
         if(toplay[0] !== m.author.id) return false
-        await oldturn.delete()
-        response = m.content
-        await m.delete().catch(err => {})
+        
+        response = m.content.toLowerCase()
         counter === 1 ? counter = 1 : counter--
+
+        await m.delete().catch(err => {})
+        await oldturn.delete()
         return true
     };
+
     message.channel.awaitMessages({ filter, max: 1, time: 60000, errors: ['time'] })
     .then(async collected => {
         reply = true
         if(response === '!chute'){
+
             message.channel.send({content:'Pode tentar acertar já, apenas uma chance.'})
             const filter = async (m) => {
                 if(toplay[0] !== m.author.id) return false
                 response = m.content
                 return true
             };
-            message.channel.awaitMessages({ filter, max: 1, time: 60000, errors: ['time'] })
+
+            message.channel.awaitMessages({ filter, max: 1, time: 15000, errors: ['time'] })
             .then(async collected => {
                 if(response.toLowerCase() === prashe.toLowerCase()){
                     embed = endGameEmbed(client.users.cache.get(toplay[0]).username, prashe)
                     message.channel.send({embeds:[embed]})
                     allDeath(true)
                 }else{
-                        let toRem = temp.indexOf(toplay[0])
-                        let cut = temp.splice(toRem,1)
+                    temp.splice(temp.indexOf(toplay[0]) , 1) //remove usuario que errou do recarregador de rodada
                     if(temp.length === 0){ 
                         allDeath()
                     }else{
@@ -229,8 +214,16 @@ let game = async () => {
                     }
                 }
             }).catch(collected => {
-                message.channel.send('Acabou o tempo')
+                message.channel.send('removido')
+                temp.splice(temp.indexOf(toplay[0]) , 1) //remove usuario que errou do recarregador de rodada
+                if(temp.length === 0){ 
+                    allDeath()
+                }else{
+                    message.channel.send({content:`Jogador não responde e foi de F`})
+                    game()
+                }
             });
+
         }else{
             let finder = false
             for(let i = 0; i < opts.length; i++){
@@ -266,8 +259,6 @@ let game = async () => {
             await message.channel.send(`por falta de resposta ${client.users.cache.get(toplay[0]).username} foi removido.`)
             temp.splice(temp.indexOf(toplay[0]),1)
             if(temp.length === 0){
-                await oldturn.delete().catch(err => {})
-                await originalmsg.delete().catch(err => {})
                 allDeath()
                 return
             }else{
@@ -277,6 +268,6 @@ let game = async () => {
         reply = false
     });
 }
-newQuestion()
+await newQuestion()
 game()
 }

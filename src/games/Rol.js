@@ -41,7 +41,6 @@ module.exports = async (x,GAME_INFO,client,message) => {
         shuffle(tambor)
         let new_round = async () => {
             if(players.length === 1){
-                originalmsg.delete().catch(err => {})
                 return await message.channel.send({embeds:[russaEnd(client.users.cache.get(players[0]).username, prize)]})
             }
             if(atual > players.length - 1){

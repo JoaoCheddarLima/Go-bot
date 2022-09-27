@@ -60,7 +60,11 @@ Para abrir este projeto você necessita das seguintes ferramentas:
 --> <a href="https://nodejs.org/en/">NodeJS</a>
 
 ## 🗃 Histórico de lançamentos
-* 1.6.0 - 25/08/2022
+* 1.6.1 - 27/09/2022
+    * Correção de bugs no jogo da forca
+    * Correção de bugs no uso de botões no comando jogar
+    * Pequena refatoração de codigo
+* 1.6.0 - 25/09/2022
     * Economia criada.
     * Adicionado daily.
     * Agora opta por uso de botões em vez de reações (ainda em processo de mudança).
