@@ -5,6 +5,7 @@ const { turnChangeEmbedVelha, findLocal, checkWin, drawEmbed, winnerEmbed, addWi
 const { PlayAgain, ImageEmbed } = require('../reuse/games/global')
 const { insight } = require('../reuse/functions')
 const { addGamePoints } = require('../reuse/config/data')
+const { addMoney, addGroupMoney } = require('../economy/utils/ecoManager')
 module.exports = async (playexrs,GAME_INFO,client,message) => {
     insight('VelhaGame', true, 'games')
     //variables
@@ -138,7 +139,16 @@ module.exports = async (playexrs,GAME_INFO,client,message) => {
                         }
                         addWinner(addarr, 'Vel', infos)
                         await displayDraw(who,esc).then(async () => {
-                            await message.channel.send({content:`||${mark}||`,embeds:[ImageEmbed(),winnerEmbed(client.users.cache.get(toplay[0]).username,rounds)], files:[attachments] })
+                            await message.channel.send({
+                                content:`||${mark}||`,
+                                embeds:[
+                                    ImageEmbed(),
+                                    winnerEmbed(client.users.cache.get(toplay[0]).username,rounds),
+                                    await addMoney(toplay[0], 30, client.users.cache.get(toplay[0]).username),
+                                    await addMoney(toplay[1], 15, client.users.cache.get(toplay[1]).username)
+                                ], 
+                                files:[attachments] 
+                            })
                         })
                         restart()
                     }else{
@@ -149,7 +159,16 @@ module.exports = async (playexrs,GAME_INFO,client,message) => {
                     tie(toplay, 'Vel', infos)
                     let who = players.player1.id === full.author.id ? players.player1.type : players.player2.type
                     await displayDraw(who,esc)
-                    await message.channel.send({content:`||${mark}||`,embeds:[drawEmbed()], files:[attachments] })
+                    await message.channel.send({
+                        content:`||${mark}||`,
+                        embeds:[
+                            drawEmbed(),
+                            await addMoney(toplay[0], 15, client.users.cache.get(toplay[0]).username),
+                            await addMoney(toplay[1], 15, client.users.cache.get(toplay[1]).username)
+                        ], 
+                        files:[attachments] 
+                    })
+
                     restart()
                 }
             }).catch(collected => {

@@ -7,6 +7,7 @@ const colors = {
     verde:"#00FF00",
     vermelho:"FF0000"
 }
+
 this.addWinner = (toplay, gameName, infos) => {
     infos.wins = 1
     addGamePoints(toplay[0], gameName, infos)
@@ -15,6 +16,7 @@ this.addWinner = (toplay, gameName, infos) => {
     addGamePoints(toplay[1], gameName, infos)
     infos.losses = 0
 }
+
 this.tie = (toplay, gameName, infos) => {
     infos.empates = 1
     for(key of toplay){

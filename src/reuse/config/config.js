@@ -2,6 +2,16 @@ const fs = require('fs')
 let path = './src/reuse/config/userOptions.json'
 let pathServers = './src/reuse/config/serverConfigs.json'
 
+this.isValidUser = async (id, client) => {
+    try{
+        let fixuser = id.slice(2).slice(0,-1)
+        await client.users.cache.get(fixuser).username
+        return fixuser
+    }catch(err){
+        return false
+    }
+}
+
 this.checkServerConfigs = (message) => {
     const saved = JSON.parse(fs.readFileSync(pathServers))
     let serverId = message.guild.id
@@ -71,8 +81,4 @@ this.checkConfigs = (id, game) => {
     const usersConfigs = JSON.parse(fs.readFileSync(path))
     if(usersConfigs[`${id}`][`${game}`] === true) return true
     return false
-}
-
-this.getInfo = (game, infos) => {
-
 }

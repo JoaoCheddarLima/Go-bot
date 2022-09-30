@@ -59,7 +59,12 @@ Para abrir este projeto você necessita das seguintes ferramentas:
 
 --> <a href="https://nodejs.org/en/">NodeJS</a>
 
-## 🗃 Histórico de lançamentos
+## 🗃 Histórico de lançamento
+* 1.6.2 - 30/08/2022
+    * Adicionado ganhos de dinheiro ao jogar
+    * Adicionado comando de perfil
+    * Correção de bugs na coleta de dados dos jogos
+    * Correção de bug ao checar se mensagem é comando
 * 1.6.1 - 27/09/2022
     * Correção de bugs no jogo da forca
     * Correção de bugs no uso de botões no comando jogar

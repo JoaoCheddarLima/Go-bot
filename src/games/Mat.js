@@ -1,3 +1,4 @@
+const { addGroupMoney } = require('../economy/utils/ecoManager.js')
 const { addGamePoints } = require('../reuse/config/data.js')
 const { insight } = require('../reuse/functions.js')
 const { GenQuestions, QuestionEmbed, CorrectAnswer, GameOverEmbed, PauseEmbed, LevelUpEmbed } = require('../reuse/games/mathquestions.js')
@@ -70,15 +71,15 @@ let gameGen = async () => {
                 }
             })
             .then(() => gameGen())
-        }).catch(collected => {
-            questionmsg.delete().catch(err => {})
+        }).catch(async collected => {
+            await questionmsg.delete().catch(err => {})
             for(key in tabela_pontos){
                 infos.level = level
                 infos.points = tabela_pontos[key].points
                 infos.rounds = round
-                addGamePoints(key,'Mat',infos)
+                await addGamePoints(key,'Mat',infos)
             }
-            message.channel.send({embeds: [GameOverEmbed(newquestion.result, points, round, level, GAME_INFO)]})
+            message.channel.send({embeds: [GameOverEmbed(newquestion.result, points, round, level, GAME_INFO),await addGroupMoney(tabela_pontos, 7)]})
         });
     }
         if(round > 1){

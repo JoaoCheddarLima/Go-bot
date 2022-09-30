@@ -28,6 +28,7 @@ this.justAText = (text, color) => {
     .setFooter({text:text})
     return embed
 }
+
 this.notRegistered = () => {
     const embed = new EmbedBuilder()
     .setColor(colors.vermelho)

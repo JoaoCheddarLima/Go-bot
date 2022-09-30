@@ -1,10 +1,11 @@
 const fs = require('fs')
 const { addGamePoints } = require('../reuse/config/data')
-const { insight } = require('../reuse/functions')
+const { insight, delete_msg } = require('../reuse/functions')
 const { questionEmbed, turnChangeEmbed, endGameEmbed, loseHp, playAgain } = require('../reuse/games/forcaquestions')
-const { quitEmbed } = require('../reuse/games/global')
+const { quitEmbed, justAText } = require('../reuse/games/global')
 const { JoinEmbed } = require('../reuse/games/mathquestions')
 const { getRandom } = require('../reuse/games/forca-cfgs/system')
+const { addMoney } = require('../economy/utils/ecoManager')
 
 module.exports = async (babe,GAME_INFO,client,message) => {
 insight('ForcaGame', true, 'games')
@@ -15,7 +16,7 @@ let prashe
 let temp = [...GAME_INFO.players]
 let infos = {
     "acertos": 0,
-    "jogos": 0
+    "jogos": 1
 }
 let reply = false
 let msgtoedit 
@@ -30,6 +31,7 @@ let opts = []
 let discover = []
 let jogadas = []
 let tema
+let todel
 let embed
 let done
 //gen question -> (opts, discover) -> [questions]
@@ -56,16 +58,28 @@ let newQuestion = async () => {
     gone.push(prashe)
 }
 //GAME SYSTEMS
-let allDeath = async (win) => {
+let allDeath = async (win, who) => {
     await msgtoedit.delete().catch(err => {})
     if(win === true){
-        infos.acertos += 1
-        infos.jogos += 1
+        for(key of GAME_INFO.players){
+            if(key === who){
+                infos.acertos = 1
+                message.channel.send({content:'||Todos receberam +15 💸, e aquele que acertou recebeu o dobro (+30).||'})
+                await addMoney(who, 15 * 2, '')
+                await addGamePoints(key, 'For', infos)
+                infos.acertos = 0
+            }else{
+                addMoney(key,15,'')
+                addGamePoints(key, 'For', infos)
+            }
+        }
+    }else{
+        for(key of GAME_INFO.players){
+            message.channel.send({content:'||Todos os participantes receberam +7 💸||'})
+            addMoney(key,7,'')
+            addGamePoints(key, 'For', infos)
+        }
     }
-    for(key of GAME_INFO.players){
-        addGamePoints(key, 'For', infos)
-    }
-    infos.acertos = 0
     let embed = playAgain(prashe, '', win)
     let originalmsg = await message.channel.send({embeds:[embed]})
     let nowplaying = []
@@ -73,6 +87,7 @@ let allDeath = async (win) => {
         await originalmsg.react(reactions[i]).catch(err => {})
     }
     const filter = async (reaction, user) => {
+        if(user.bot) return false
         if(reaction.emoji.name === '✅' && nowplaying.indexOf(user.id) == -1 ){
             collected = reaction.emoji.name
             return true
@@ -82,14 +97,17 @@ let allDeath = async (win) => {
         return false
     };
 
-    const collector = originalmsg.createReactionCollector({ filter, time: 15000, max:10});
+    const collector = originalmsg.createReactionCollector({ filter, time: 25000, max:10});
     collector.on('collect', async (reaction, user) => {
             await originalmsg.channel.send({embeds:[JoinEmbed(`${client.users.cache.get(user.id).username}`)]})
             nowplaying.push(user.id)
     })
 
     collector.on('end',async collected => {
-        if(nowplaying.length === 0) return
+        if(nowplaying.length === 0){
+            await originalmsg.delete().catch(err => {})
+            return message.channel.send({embeds:[justAText('❗ Por falta de jogadores eu encerro.','#ffffff')]})
+        }
         GAME_INFO.players = nowplaying
         reset()
         await newQuestion()
@@ -191,7 +209,7 @@ let game = async () => {
         reply = true
         if(response === '!chute'){
 
-            message.channel.send({content:'Pode tentar acertar já, apenas uma chance.'})
+            todel = await message.channel.send({content:`||<@${toplay[0]}>||`,embeds:[justAText('⭐ Digite a palavra, cuidado com erros', '#ffffff')]})
             const filter = async (m) => {
                 if(toplay[0] !== m.author.id) return false
                 response = m.content
@@ -203,7 +221,7 @@ let game = async () => {
                 if(response.toLowerCase() === prashe.toLowerCase()){
                     embed = endGameEmbed(client.users.cache.get(toplay[0]).username, prashe)
                     message.channel.send({embeds:[embed]})
-                    allDeath(true)
+                    allDeath(true, toplay[0])
                 }else{
                     temp.splice(temp.indexOf(toplay[0]) , 1) //remove usuario que errou do recarregador de rodada
                     if(temp.length === 0){ 
@@ -213,13 +231,14 @@ let game = async () => {
                         game()
                     }
                 }
-            }).catch(collected => {
-                message.channel.send('removido')
+            }).catch(async collected => {
                 temp.splice(temp.indexOf(toplay[0]) , 1) //remove usuario que errou do recarregador de rodada
                 if(temp.length === 0){ 
+                    await delete_msg(todel)
                     allDeath()
                 }else{
-                    message.channel.send({content:`Jogador não responde e foi de F`})
+                    await delete_msg(todel)
+                    await message.channel.send({embeds:[justAText(`Jogador não respondeu e foi removido.`,  "#FF0000")]})
                     game()
                 }
             });
@@ -256,7 +275,7 @@ let game = async () => {
     }).catch(async collected => {
         console.log(collected)
         if(reply === false){
-            await message.channel.send(`por falta de resposta ${client.users.cache.get(toplay[0]).username} foi removido.`)
+            await message.channel.send({embeds:[justAText(`por falta de resposta ${client.users.cache.get(toplay[0]).username} foi removido.`, "#000000")]})
             temp.splice(temp.indexOf(toplay[0]),1)
             if(temp.length === 0){
                 allDeath()

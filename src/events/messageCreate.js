@@ -9,7 +9,7 @@ module.exports = {
 				command.execute(message,'x',client)
 			} catch(err){console.log(err)}
 		}
-		if (!message.content.startsWith(client.prefix));
+		if(!message.content.startsWith(client.prefix)) return;
 
 	const args = message.content.slice(client.prefix.length).trim().split(/ +/)
 

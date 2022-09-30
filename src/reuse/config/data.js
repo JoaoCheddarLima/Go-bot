@@ -4,25 +4,32 @@ let pathGames = './src/dataBase/games/GamesDone.json'
 
 this.checkUser = (userid) => {
     let data = JSON.parse(fs.readFileSync(path))
+
     if(data[userid] === undefined){
         data[userid] = {
-            "gamedata":{},
-            bal:0
+            "Games":{},
+            "Banco":{
+                bal:0,
+                total:0
+            }
         }
         return fs.writeFileSync(path, JSON.stringify(data, null, 2));
     }
 }
 
-this.addGamePoints =  (userid, game, infos) => {
-    this.checkUser(userid)
+this.addGamePoints = async (userid, game, infos) => {
+    await this.checkUser(userid)
     let data = JSON.parse(fs.readFileSync(path))
     let infosNeed = JSON.parse(fs.readFileSync(pathGames))
-    if(data[userid]["gamedata"][game] === undefined){
-        data[userid]["gamedata"][game] = {}
+
+    if(data[userid]["Games"][game] === undefined){
+        data[userid]["Games"][game] = {}
     }
+    
     let infoArray = infosNeed[game].infos
     for(key of infoArray){
-        data[userid]["gamedata"][game][key] === undefined ? data[userid]["gamedata"][game][key] = infos[key] : data[userid]["gamedata"][game][key] += infos[key]
+        data[userid]["Games"][game][key] === undefined ? data[userid]["Games"][game][key] = infos[key] : data[userid]["Games"][game][key] += infos[key]
     }
+
     return fs.writeFileSync(path, JSON.stringify(data, null, 2));   
 }

@@ -1,4 +1,5 @@
 const fs = require('fs')
+const { addMoney } = require('./utils/ecoManager')
 
 this.random = (a,b) => {Math.floor(Math.random() * (b - a + 1)+a)}
 
@@ -23,7 +24,6 @@ this.dateDif = (date) => {
 
 this.checkupdate = (user) => {
     const dailyData = JSON.parse(fs.readFileSync('./src/dataBase/userData/daily.json'))
-    const users = JSON.parse(fs.readFileSync('./src/dataBase/userData/users.json'))
     let date = new Date()
     let ano = date.getFullYear()
     let mes = date.getMonth()
@@ -37,12 +37,10 @@ this.checkupdate = (user) => {
     if(dailyData[ano][mes][dia] === undefined){
         dailyData[ano][mes][dia] = []
     }
-    console.log(dailyData)
-    console.log(dailyData[ano][mes][dia].includes('banana'))
+
     if(dailyData[ano][mes][dia].includes(user) === false){
         dailyData[ano][mes][dia].push(user)
-        users[user].bal += 15
-        fs.writeFileSync('./src/dataBase/userData/users.json', JSON.stringify(users, null, 2))
+        addMoney(user, 15, '')
         fs.writeFileSync('./src/dataBase/userData/daily.json', JSON.stringify(dailyData, null, 2))
         return true
     }

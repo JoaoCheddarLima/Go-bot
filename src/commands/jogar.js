@@ -61,9 +61,9 @@ module.exports = {
             }
         }
         //games executor
-            let startGame = async () => {
+            let startGame = async (i) => {
                 insight('GamesPlayed')
-                await originalmsg.delete().catch(err => {})
+                await i.deleteReply().catch(err => {})
                 const game = require(`../games/${game_choosed}`)
                 game(players,GAME_INFO,client,message)
             }
@@ -150,7 +150,7 @@ module.exports = {
                 configs.text.push(String(values))
                 values++
             }
-            await originalmsg.edit({components:[buttons(configs, values-1)],embeds: [gameChooseEmbed(GAME_INFO.caller,games_message )]})
+            originalmsg = await i.update({components:[buttons(configs, values-1)],embeds: [gameChooseEmbed(GAME_INFO.caller,games_message )]})
             
             const filter = async i => {
                 if(configs.id.indexOf(i.customId) !== -1 && i.user.id === (GAME_INFO.caller)){
@@ -170,7 +170,7 @@ module.exports = {
 
             const collector = message.channel.createMessageComponentCollector({ filter, time: 30000, max:1 });
 
-            collector.on('collect', async i => {
+            collector.on('collect', async z => {
                     let getnum = configs.id.indexOf(collected)+1
                     game_choosed = game_options[getnum]
                     const userOptions = JSON.parse(fs.readFileSync('./src/reuse/config/userOptions.json'))
@@ -181,12 +181,12 @@ module.exports = {
                     .setDescription(`${games[game_choosed].guideText}`)
                     .setColor(`${games[game_choosed].cor}`)
                     .setFooter({text:`⭐ Dica: você pode desativar este guia rápido digitando g!guia ${game_options[getnum]} e ativar novamente utilizando g!guia ${game_options[getnum]} ⭐`})
-                    originalmsg.edit({components:[],embeds: [embed]})
+                    originalmsg = await originalmsg.edit({components:[],embeds: [embed]})
                     setTimeout(() => {
                         startGame()
                     }, segundos * 1000)
                     }else{
-                        startGame()
+                        startGame(i)
                     }
             })
             collector.on('end', collected => {
