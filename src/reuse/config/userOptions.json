@@ -4,13 +4,24 @@
     "For": false,
     "Mul": false,
     "Vel": false,
-    "Rol": false
+    "Rol": false,
+    "undefined": true
   },
   "1000140174946226286": {
     "Vel": false,
-    "Rol": false
+    "Rol": false,
+    "Mat": false,
+    "Mul": false,
+    "For": false
   },
   "932674797203234876": {
     "Mul": true
+  },
+  "688913427355533312": {
+    "Mat": false,
+    "undefined": true
+  },
+  "272108596773388288": {
+    "undefined": true
   }
 }

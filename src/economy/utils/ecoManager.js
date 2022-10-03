@@ -8,10 +8,10 @@ this.addGroupMoney = async (obj,x) => {
     let i = 0
     for(key in obj){
         i++
+        await checkUser(key)
     }
     for(key in obj){
-        await checkUser(key)
-        text += `🔸 ${obj[key]['username']} Recebeu: +${Math.floor(((obj[key].points/1000) + x) * i)}💸\n`
+        text += `🔸 ${obj[key].username} Recebeu: +${Math.floor(((obj[key].points/1000) + x) * i)}💸\n`
         const data = JSON.parse(fs.readFileSync(infopath))
         data[key]['Banco']['bal'] += Math.floor(((obj[key].points/1000) + x) * i)
         data[key]['Banco']['total'] += Math.floor(((obj[key].points/1000) + x) * i)

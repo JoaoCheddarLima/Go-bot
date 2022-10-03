@@ -1,17 +1,17 @@
 {
-  "GameMenu": 44,
+  "GameMenu": 31,
   "mostPlayed": {
-    "solo": 35,
-    "grupo": 1,
-    "duo": 2
+    "solo": 26,
+    "grupo": 2
   },
-  "GamesPlayed": 31,
+  "GamesPlayed": 19,
   "games": {
-    "ForcaGame": 21,
-    "MathGame1": 10,
-    "VelhaGame": 1,
-    "RoletaRussa": 1
+    "ForcaGame": 3,
+    "MathGame1": 17,
+    "MathGame2": 4
   },
-  "Daily": 7,
-  "CanalRegistrado": 1
+  "perfil": 5,
+  "TutorialDisableTotal": 3,
+  "Support": 2,
+  "Daily": 18
 }

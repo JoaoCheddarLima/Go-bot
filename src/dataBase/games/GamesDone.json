@@ -5,6 +5,7 @@
     "cor": "#7600bc",
     "playableModes": "all",
     "shortcut": "Mat",
+    "minPlayers":1,
     "infos": ["points", "level", "rounds","jogos"]
   },
   "Mul": {
@@ -13,6 +14,7 @@
     "cor": "#adff2f",
     "playableModes": "all",
     "shortcut": "Mul",
+    "minPlayers":1,
     "infos": ["points", "level", "round","jogos"]
   },
   "For": {
@@ -21,6 +23,7 @@
     "cor": "#adff2f",
     "playableModes": "all",
     "shortcut": "For",
+    "minPlayers":1,
     "infos": ["acertos", "jogos"]
   },
   "Vel": {
@@ -29,6 +32,7 @@
     "cor": "#adff2f",
     "playableModes": "duo",
     "shortcut": "Vel",
+    "minPlayers":2,
     "infos":["jogos","empates","wins","losses"]
   },
   "Rol": {
@@ -37,6 +41,7 @@
     "cor": "#adff2f",
     "playableModes": "grupo",
     "shortcut": "Rol",
+    "minPlayers":2,
     "infos":["tiros","wins","ganhos","jogos", "gastos","percas"]
   }
 }

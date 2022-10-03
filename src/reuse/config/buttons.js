@@ -1,5 +1,31 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Emoji } = require('discord.js');
 
+this.blueButtons = (obj, n=1) => {
+    const row = new ActionRowBuilder()
+    let i = 0
+    while(i < n){
+        row.addComponents(
+            new ButtonBuilder()
+                .setCustomId(obj.id[i])
+                .setLabel(obj.text[i])
+                .setStyle(ButtonStyle.Primary)
+        );
+        i++
+    }
+    return row
+}
+
+this.redButton = (obj) => {
+    const row = new ActionRowBuilder()
+    .addComponents(
+        new ButtonBuilder()
+            .setCustomId(obj.id)
+            .setLabel(obj.text)
+            .setStyle(ButtonStyle.Danger)
+    );
+    return row
+}
+
 this.button = (obj) => {
     const row = new ActionRowBuilder()
     .addComponents(

@@ -20,10 +20,11 @@ let infos = {
 }
 let gameGen = async () => {    
     let newquestion = GenQuestions(level, 'mult')
+
         if(round === 1){
             for(key of players){
                 tabela_pontos[`${key}`] = {
-                    username:client.users.cache.get(key).username,
+                    username: await client.users.cache.get(key).username,
                     points: 0
                 }
             }
@@ -38,6 +39,9 @@ let gameGen = async () => {
         questionmsg = await message.channel.send({content: `||${marcar}||`,embeds:[QuestionEmbed(round, newquestion.question, newquestion.level)]})
         
         const filter = m => {
+            if(m.content === "!s"){
+                return true
+            }
             response = Number(m.content)
             let IS_PLAYER = false
             correct = m

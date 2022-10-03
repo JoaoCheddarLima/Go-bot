@@ -25,7 +25,7 @@ let gameGen = async () => {
         if(round === 1){
             for(key of players){
                 tabela_pontos[`${key}`] = {
-                    username:client.users.cache.get(key).username,
+                    username: await client.users.cache.get(key).username,
                     points: 0
                 }
             }

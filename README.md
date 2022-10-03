@@ -60,6 +60,12 @@ Para abrir este projeto você necessita das seguintes ferramentas:
 --> <a href="https://nodejs.org/en/">NodeJS</a>
 
 ## 🗃 Histórico de lançamento
+* 1.6.3 - 02/10/2022
+    * Adicionado botão de voltar no menu de perfil para navegação
+    * Adicionado minigame (captcha) para receber o daily
+    * Adicionado alt commands (Acesso de varias maneiras)
+    * Mudança no seletor de jogos (apenas mostra o que pode ser jogado)
+    * Correção de bugs nos jogos de matemática
 * 1.6.2 - 30/08/2022
     * Adicionado ganhos de dinheiro ao jogar
     * Adicionado comando de perfil
@@ -85,16 +91,22 @@ Para abrir este projeto você necessita das seguintes ferramentas:
 # 📌 Comandos existentes
 <ul>
   <li>
-    g!daily   ----> recebe o valor fixo de moedas de ouro por dia 🔸
+    g!jogar  ---> abre o menu de jogos 🔸
   </li>
   <li>
-    g!jogar   ---> abre o menu de jogos 🔸
+    g!perfil ---> mostra seus dados de economia e jogos 🔸
   </li>
   <li>
-    g!ajuda  ----> mostra a versão atual e prefixo🔸
+    g!guia   ---> Ativa/desativa os textos de guia para o jogo especificado 🔸
   </li>
   <li>
-    g!reg    ----> registra o canal permitindo o uso de g!jogar 🔸
+    g!daily  ---> recebe o valor fixo de moedas de ouro por dia 🔸
+  </li>
+  <li>
+    g!ajuda  ---> mostra a versão atual e prefixo🔸
+  </li>
+  <li>
+    g!reg    ---> registra o canal permitindo o uso de g!jogar 🔸
   </li>
 </ul>
 

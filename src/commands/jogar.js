@@ -5,8 +5,8 @@ const { InvitingEmbed, JoinEmbed } = require('../reuse/games/mathquestions.js')
 const {EmbedBuilder} = require('discord.js')
 const { error_embed } = require('../reuse/error-embed')
 const { checkConfigs, checkServerConfigs, registerUses } = require('../reuse/config/config')
-const { callAdmin, menu, gameChooseEmbed } = require('../reuse/games/global')
-const { idBuilder, buttons, button } = require('../reuse/config/buttons')
+const { callAdmin, menu, gameChooseEmbed, justAText } = require('../reuse/games/global')
+const { idBuilder, buttons, button, redButton, blueButtons } = require('../reuse/config/buttons')
 
 module.exports = {
     name:"jogar",
@@ -48,7 +48,7 @@ module.exports = {
         }
         if(input1){
             try{
-                //if(userId === input1.slice(2).slice(0,-1)) return message.channel.send({embeds:[error_embed('ainda não pode jogar sozinho')]}).then(() => message.delete().catch((err) => {console.error(err)}))
+                if(userId === input1.slice(2).slice(0,-1)) return message.channel.send({embeds:[error_embed('ainda não pode jogar sozinho')]}).then(() => message.delete().catch((err) => {console.error(err)}))
                 if(error == true) return
                 userB = input1.slice(2).slice(0,-1)
                 userB_Name = await client.users.cache.get(userB).username
@@ -113,11 +113,15 @@ module.exports = {
                     await i.update({components:[button(config)],embeds:[InvitingEmbed(GAME_INFO.caller)]})
                     const filter = async i => {
                         let gather = async (i) => {
-                            console.log(i.user.bot)
-                            if(i.user.bot || players.indexOf(i.user.id) !== -1) return false
+                            if(i.user.bot || players.indexOf(i.user.id) !== -1){
+                                i.reply({
+                                    content:'Você já está no grupo',
+                                    ephemeral:true
+                                })
+                                return false
+                            }
                             players.push(i.user.id)
                             GAME_INFO.players.push(i.user.id)
-                            i.update({components:[button(config)],embeds:[InvitingEmbed(GAME_INFO.caller)]})
                             return true
                         }
                         res = await gather(i)
@@ -144,21 +148,29 @@ module.exports = {
             }
 
             for(key in games){
-                games_message = games_message + `${blacked}${reactions[values-1]} - ${games[key].nome}${blacked}\n`
+                console.log(GAME_INFO['players'])
+                if(games[key]['playableModes'] === 'duo' && GAME_INFO['players'].length !== 2){
+                    continue
+                }
+                if(games[key]['minPlayers'] > GAME_INFO['players'].length) continue
                 game_options[`${values}`] = games[key].shortcut
                 configs.id.push(games[key].shortcut)
-                configs.text.push(String(values))
+                configs.text.push(games[key].nome)
                 values++
             }
-            originalmsg = await i.update({components:[buttons(configs, values-1)],embeds: [gameChooseEmbed(GAME_INFO.caller,games_message )]})
+           if(GAME_INFO['type'] === 'grupo'){
+            originalmsg = await i.editReply({components:[blueButtons(configs, values-1)],embeds: [gameChooseEmbed(GAME_INFO.caller,games_message )]})
+           }else{
+            originalmsg = await i.update({components:[blueButtons(configs, values-1)],embeds: [gameChooseEmbed(GAME_INFO.caller,games_message )]})
+           }
             
             const filter = async i => {
                 if(configs.id.indexOf(i.customId) !== -1 && i.user.id === (GAME_INFO.caller)){
-                    if(game_options[configs.id.indexOf(i.customId)+1] === 'Vel' && GAME_INFO.type !== 'duo'){
+                    if(game_options[configs.id.indexOf(i.customId)+1] === 'Vel' && GAME_INFO['players'].length !== 2){
                         await i.reply({embeds:[error_embed('este jogo é apenas para dois jogadores')], ephemeral:true})
                         return false
                     }
-                    if(game_options[configs.id.indexOf(i.customId)+1] === 'Rol' && GAME_INFO.type == 'solo'){
+                    if(game_options[configs.id.indexOf(i.customId)+1] === 'Rol' && GAME_INFO['players'].length < 2){
                         await i.reply({embeds:[error_embed('este jogo não pode ser jogado sozinho')], ephemeral:true})
                         return false
                     }
@@ -171,20 +183,38 @@ module.exports = {
             const collector = message.channel.createMessageComponentCollector({ filter, time: 30000, max:1 });
 
             collector.on('collect', async z => {
+                    checkConfigs(GAME_INFO.caller, game_choosed)
+
                     let getnum = configs.id.indexOf(collected)+1
                     game_choosed = game_options[getnum]
+
                     const userOptions = JSON.parse(fs.readFileSync('./src/reuse/config/userOptions.json'))
-                    checkConfigs(GAME_INFO.caller, game_choosed)
-                    if(userOptions[GAME_INFO.caller][game_choosed] === true){
-                    let segundos = 15
-                    embed = new EmbedBuilder()
-                    .setDescription(`${games[game_choosed].guideText}`)
-                    .setColor(`${games[game_choosed].cor}`)
-                    .setFooter({text:`⭐ Dica: você pode desativar este guia rápido digitando g!guia ${game_options[getnum]} e ativar novamente utilizando g!guia ${game_options[getnum]} ⭐`})
-                    originalmsg = await originalmsg.edit({components:[],embeds: [embed]})
-                    setTimeout(() => {
-                        startGame()
-                    }, segundos * 1000)
+
+                    if(userOptions[GAME_INFO.caller]?.[game_choosed] !== false){
+                        let segundos = 15
+                        let config = {
+                            id:idBuilder(3),
+                            text:'Desativar'
+                        }
+                        const filter = i => {
+                            return i.customId == config.id && GAME_INFO['players'].indexOf(i.user.id) !== -1
+                        }
+                        const collector = await message.channel.createMessageComponentCollector({filter, time: segundos*1000, max:10})
+
+                        embed = new EmbedBuilder()
+                        .setDescription(`${games[game_choosed].guideText}`)
+                        .setColor(`${games[game_choosed].cor}`)
+                        .setFooter({text:`⭐ Dica: você pode desativar este guia rápido digitando g!guia ${game_options[getnum]} e ativar novamente utilizando g!guia ${game_options[getnum]} ⭐`})
+                        await i.editReply({components:[await redButton(config)],embeds: [embed]})
+
+                        collector.on('collect', async i => {
+                            userOptions[i.user.id][game_choosed] = false
+                            i.reply({embeds:[justAText('Menu desativado', "#FF0000")], ephemeral: true})
+                            fs.writeFileSync('./src/reuse/config/userOptions.json', JSON.stringify(userOptions, null,2))
+                        })
+                        setTimeout(() => {
+                            startGame(i)
+                        }, segundos * 1000)
                     }else{
                         startGame(i)
                     }
@@ -208,14 +238,15 @@ module.exports = {
             };
                 embed = new EmbedBuilder()
                 .setColor('#FF0000')
-                .setFooter({text:`🔸 Oi, ${client.users.cache.get(userB).username}, Você está sendo convidado para jogar em dupla 😳`})
-                const collector = message.channel.createMessageComponentCollector({ filter, time: 15000, max:1 });
+                .setFooter({text:`🔸 Oi, ${client.users.cache.get(userB).username}! Você está sendo convidado para jogar em dupla 😳`})
+                const collector = message.channel.createMessageComponentCollector({ filter, time: 30000, max:1 });
                 originalmsg = await message.channel.send({content:`||<@${userB}>,<@${userA}>||`,embeds: [embed], components:[button(configs)] })
     
                 collector.on('collect', async i => {
                     GAME_MENU(i)
                 });
-                collector.on('end', collected => {
+                collector.on('end', async collected => {
+                   await originalmsg.delete().catch(err => {})
                 });
         }else{
             GLOBAL_SELECTOR()

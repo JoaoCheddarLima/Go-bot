@@ -1,47 +1,77 @@
 {
   "429771320964939787": {
     "Games": {
-      "Vel": {
-        "jogos": 1,
-        "empates": 0,
-        "wins": 0,
-        "losses": 0
-      },
       "Mat": {
-        "points": 129,
+        "points": 293,
+        "level": 8,
+        "rounds": 12,
+        "jogos": 8
+      },
+      "Mul": {
         "level": 1,
-        "rounds": 3,
         "jogos": 1
       },
       "For": {
-        "acertos": 1,
+        "acertos": 0,
         "jogos": 1
       }
     },
     "Banco": {
-      "bal": 82,
-      "total": 82
+      "bal": 101,
+      "total": 101
+    }
+  },
+  "1000140174946226286": {
+    "Games": {
+      "Mat": {
+        "points": 3066,
+        "level": 25,
+        "rounds": 44,
+        "jogos": 24
+      },
+      "Mul": {
+        "level": 42,
+        "jogos": 42
+      },
+      "For": {
+        "acertos": 0,
+        "jogos": 1
+      }
+    },
+    "Banco": {
+      "bal": 535,
+      "total": 535
+    }
+  },
+  "4,2,9,7,7,1,3,2,0,9,6,4,9,3,9,7,8,7": {
+    "Games": {},
+    "Banco": {
+      "bal": 0,
+      "total": 0
     }
   },
   "688913427355533312": {
     "Games": {
-      "Vel": {
-        "jogos": 1,
-        "empates": 0,
-        "wins": 0,
-        "losses": 0
+      "Mul": {
+        "level": 1,
+        "jogos": 1
       }
     },
     "Banco": {
-      "bal": 30,
-      "total": 30
+      "bal": 8,
+      "total": 8
     }
   },
-  "1000140174946226286": {
-    "Games": {},
+  "272108596773388288": {
+    "Games": {
+      "Mul": {
+        "level": 2,
+        "jogos": 2
+      }
+    },
     "Banco": {
-      "bal": 15,
-      "total": 15
+      "bal": 17,
+      "total": 17
     }
   }
 }

@@ -92,8 +92,9 @@ this.GenQuestions = (level, type) => {
     }
     let numbers = []
     let questionString = ''
-    let sumAll = 0
+    let sumAll
     if(type == 'mult'){
+        sumAll = 1
         let MAX_SUMVALUE = 50
         let LEVEL_SUMVALUE
         let difficult = level
@@ -117,6 +118,7 @@ this.GenQuestions = (level, type) => {
         }
     }
     if(type == 'sum'){
+        sumAll = 0
         let MAX_SUMVALUE = 100
         let LEVEL_SUMVALUE
         let difficult = level
