@@ -246,7 +246,6 @@ module.exports = {
                     GAME_MENU(i)
                 });
                 collector.on('end', async collected => {
-                   await originalmsg.delete().catch(err => {})
                 });
         }else{
             GLOBAL_SELECTOR()

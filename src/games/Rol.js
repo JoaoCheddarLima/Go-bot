@@ -1,3 +1,5 @@
+const { AttachmentBuilder } = require('discord.js')
+const { subMoney, addMoney } = require('../economy/utils/ecoManager')
 const { insight } = require('../reuse/functions')
 const { turn, removePlayer, shuffling, luckyNot, russaEnd, shoot } = require('../reuse/games/russaConfigs')
 module.exports = async (x,GAME_INFO,client,message) => {
@@ -41,6 +43,10 @@ module.exports = async (x,GAME_INFO,client,message) => {
         shuffle(tambor)
         let new_round = async () => {
             if(players.length === 1){
+                for(key of GAME_INFO.players){
+                    message.channel.send({embeds:[await subMoney(key,15,client.users.cache.get(key).username)]})
+                    prize+=15
+                }
                 return await message.channel.send({embeds:[russaEnd(client.users.cache.get(players[0]).username, prize)]})
             }
             if(atual > players.length - 1){
@@ -65,18 +71,25 @@ module.exports = async (x,GAME_INFO,client,message) => {
                 if(collected === '🔀'){
                     shuffle(tambor)
                     await originalmsg.reactions.removeAll()
-                    await originalmsg.edit({embeds:[shuffling()]})
+                    await originalmsg.edit({embeds:[shuffling().setImage(`https://c.tenor.com/uz1xKkW94s4AAAAC/gun-reload.gif`)]})
                     //action
-                    let resultEmbed = luckyNot(atirar(players[atual], tambor, players))
-                    setTimeout(async () => {await originalmsg.delete().catch(err => {});action = await message.channel.send({embeds:[resultEmbed]})}, 5000)
+                    let result = atirar(players[atual], tambor, players)
+                    let resultEmbed = await luckyNot(result).setImage(result === true? 'https://i.gifer.com/NNCv.gif' : 'https://tabulaquadrada.com.br/wp-content/uploads/tumblr_nvfbmbS3341qdvzvno2_250.gif')
+                    setTimeout(async () => {
+                        await originalmsg.delete().catch(err => {});
+                        action = await message.channel.send({embeds:[resultEmbed]})}, 5000)
                     setTimeout(() => {new_round()}, 10000)
 
                 }else{
                     await originalmsg.reactions.removeAll()
-                    await originalmsg.edit({embeds:[shoot(client.users.cache.get(players[atual]).username)]})
+                    await originalmsg.edit({embeds:[await shoot(client.users.cache.get(players[atual]).username).setImage('https://64.media.tumblr.com/ffeb8ab6ff50ac5f6c0670b77bd9540f/96b9c36b2504d5cd-92/s540x810/41ae461d0759adeb1e9da16b3e78ea9ffd5c40e9.gif')]})
                     //action
-                    let resultEmbed = luckyNot(atirar(players[atual], tambor, players))
-                    setTimeout(async () => {await originalmsg.delete().catch(err => {});action = await message.channel.send({embeds:[resultEmbed]})}, 5000)
+                    let result = atirar(players[atual], tambor, players)
+                    let resultEmbed = await luckyNot(result).setImage(result === true? 'https://i.gifer.com/NNCv.gif' : 'https://tabulaquadrada.com.br/wp-content/uploads/tumblr_nvfbmbS3341qdvzvno2_250.gif')
+                    setTimeout(async () => {
+                        await originalmsg.delete().catch(err => {});
+                        action = await message.channel.send({embeds:[resultEmbed]})
+                    }, 5000)
                     setTimeout(() => {new_round()}, 10000)
                 }
             })

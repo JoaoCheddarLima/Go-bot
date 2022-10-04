@@ -35,5 +35,4 @@ let addAlt = () => {
     }
     fs.writeFileSync('./cmds.json',JSON.stringify(data,null,2))
 }
-
 addAlt()

@@ -8,7 +8,7 @@ const { insight } = require("../reuse/functions")
 module.exports = {
     name:'perfil',
     async execute(message,args, client, input1, input2, userId){
-        insight('perfil')
+        insight('Perfil')
         let checkd = input1 === undefined? message.author.id : await isValidUser(input1, client)
         if(checkd === false) return message.channel.send({embeds:[error_embed('Usuário inválido')]})
 

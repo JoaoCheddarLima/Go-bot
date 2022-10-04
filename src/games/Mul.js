@@ -39,9 +39,6 @@ let gameGen = async () => {
         questionmsg = await message.channel.send({content: `||${marcar}||`,embeds:[QuestionEmbed(round, newquestion.question, newquestion.level)]})
         
         const filter = m => {
-            if(m.content === "!s"){
-                return true
-            }
             response = Number(m.content)
             let IS_PLAYER = false
             correct = m

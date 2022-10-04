@@ -60,13 +60,21 @@ Para abrir este projeto você necessita das seguintes ferramentas:
 --> <a href="https://nodejs.org/en/">NodeJS</a>
 
 ## 🗃 Histórico de lançamento
-* 1.6.3 - 02/10/2022
+* 1.6.4 - 04/10/2022
+    * Adicionado comando para checar os comandos e seus shortcuts.
+    * Adicionado "corretor" para comandos "errados".
+    * Adicionadas ilustrações no jogo da roleta russa + aposta fixa.
+    * Removido cheat do jogo da forca.
+    * Removidos códigos sem uso.
+    * Correção de bug nas embeds de economia.
+    * Charts removidos.
+* 1.6.3 - 03/10/2022
     * Adicionado botão de voltar no menu de perfil para navegação
     * Adicionado minigame (captcha) para receber o daily
     * Adicionado alt commands (Acesso de varias maneiras)
     * Mudança no seletor de jogos (apenas mostra o que pode ser jogado)
     * Correção de bugs nos jogos de matemática
-* 1.6.2 - 30/08/2022
+* 1.6.2 - 30/09/2022
     * Adicionado ganhos de dinheiro ao jogar
     * Adicionado comando de perfil
     * Correção de bugs na coleta de dados dos jogos

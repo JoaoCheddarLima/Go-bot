@@ -12,17 +12,21 @@
   ],
   "jogar": [
     "jogar",
-    "play"
+    "play",
+    "p"
   ],
   "perfil": [
     "perfil",
-    "profile"
+    "profile",
+    "pro"
   ],
   "reg": [
     "reg",
     "registrar"
   ],
-  "t": [
-    "t"
+  "comandos": [
+    "comandos",
+    "cmds",
+    "commands"
   ]
 }
