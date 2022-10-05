@@ -26,7 +26,8 @@ let gameGen = async () => {
             for(key of players){
                 tabela_pontos[`${key}`] = {
                     username: await client.users.cache.get(key).username,
-                    points: 0
+                    points: 0,
+                    acertos: 0
                 }
             }
             GAME_INFO.end = tabela_pontos
@@ -57,6 +58,7 @@ let gameGen = async () => {
         .then(async collected => {
             await questionmsg.delete().catch(err => {})
             tabela_pontos[correct.author.id].points += newquestion.result
+            tabela_pontos[correct.author.id].acertos += 1
             points += newquestion.result
             round++
             message.channel.send({embeds:[CorrectAnswer(client.users.cache.get(correct.author.id).username, newquestion.result)]}).catch((err) => {return})
@@ -76,6 +78,7 @@ let gameGen = async () => {
             for(key in tabela_pontos){
                 infos.level = level
                 infos.points = tabela_pontos[key].points
+                infos.acertos = tabela_pontos[key].acertos
                 infos.rounds = round
                 await addGamePoints(key,'Mat',infos)
             }

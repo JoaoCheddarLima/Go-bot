@@ -1,2 +1,19 @@
 {
+  "Daily": 12,
+  "Comandos": 2,
+  "GameMenu": 42,
+  "mostPlayed": {
+    "grupo": 2,
+    "duo": 30,
+    "solo": 4
+  },
+  "GamesPlayed": 36,
+  "games": {
+    "RoletaRussa": 1,
+    "VelhaGame": 28,
+    "ForcaGame": 1,
+    "MathGame2": 5,
+    "MathGame1": 3
+  },
+  "Perfil": 29
 }

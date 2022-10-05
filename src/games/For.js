@@ -64,7 +64,6 @@ let allDeath = async (win, who) => {
         for(key of GAME_INFO.players){
             if(key === who){
                 infos.acertos = 1
-                message.channel.send({content:'||Todos receberam +15 💸, e aquele que acertou recebeu o dobro (+30).||'})
                 await addMoney(who, 15 * 2, '')
                 await addGamePoints(key, 'For', infos)
                 infos.acertos = 0
@@ -73,12 +72,13 @@ let allDeath = async (win, who) => {
                 addGamePoints(key, 'For', infos)
             }
         }
+        message.channel.send({content:`||Todos receberam +15 💸, e ${client.users.cache.get(who).username} recebeu +30 💸||`})
     }else{
         for(key of GAME_INFO.players){
-            message.channel.send({content:'||Todos os participantes receberam +7 💸||'})
             addMoney(key,7,'')
             addGamePoints(key, 'For', infos)
         }
+        message.channel.send({content:'||Todos os participantes receberam +7 💸||'})
     }
     let embed = playAgain(prashe, '', win)
     let originalmsg = await message.channel.send({embeds:[embed]})

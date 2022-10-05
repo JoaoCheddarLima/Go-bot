@@ -2,8 +2,8 @@ const fs = require('fs')
 const {AttachmentBuilder, Attachment} = require('discord.js')
 const Canvas = require('@napi-rs/canvas')
 const { turnChangeEmbedVelha, findLocal, checkWin, drawEmbed, winnerEmbed, addWinner, tie } = require('../reuse/games/VelhaConfigs')
-const { PlayAgain, ImageEmbed } = require('../reuse/games/global')
-const { insight } = require('../reuse/functions')
+const { PlayAgain, ImageEmbed, ImageEmbed2 } = require('../reuse/games/global')
+const { insight, delete_msg } = require('../reuse/functions')
 const { addGamePoints } = require('../reuse/config/data')
 const { addMoney, addGroupMoney } = require('../economy/utils/ecoManager')
 module.exports = async (playexrs,GAME_INFO,client,message) => {
@@ -122,13 +122,16 @@ module.exports = async (playexrs,GAME_INFO,client,message) => {
                 possibilities.splice(possibilities.indexOf(esc), 1)
                 return true
             };
-            message.channel.awaitMessages({ filter, max: 1, time: 60000, errors: ['time'] })
+            message.channel.awaitMessages({ filter, max: 1, time: 30000, errors: ['time'] })
             .then(async collected => {
                 if(rounds < 9){
-                    console.log(full.author.id)
                     let who = players.player1.id === full.author.id ? players.player1.type : players.player2.type
                     escolha(esc, who)
                     if(checkWin(who, tabuleiro) === true){
+                        for(key of GAME_INFO.players){
+                            console.log(key)
+                            await addMoney(key, 15, client.users.cache.get(key).username)
+                        }
                         await originalmsg.delete().catch(err => {})
                         let addarr = []
                         addarr.push(toplay[0])
@@ -139,44 +142,66 @@ module.exports = async (playexrs,GAME_INFO,client,message) => {
                         }
                         addWinner(addarr, 'Vel', infos)
                         await displayDraw(who,esc).then(async () => {
-                            await message.channel.send({
-                                content:`||${mark}||`,
+                           let endmsg =  await message.channel.send({
+                                content:`||+30💸 para você ${await client.users.cache.get(toplay[0]).username} e +15💸 pro derrotado||`,
                                 embeds:[
                                     ImageEmbed(),
                                     winnerEmbed(client.users.cache.get(toplay[0]).username,rounds),
-                                    await addMoney(toplay[0], 30, client.users.cache.get(toplay[0]).username),
-                                    await addMoney(toplay[1], 15, client.users.cache.get(toplay[1]).username)
                                 ], 
                                 files:[attachments] 
                             })
+                            setTimeout(async () => {
+                                await delete_msg(endmsg)
+                                restart()
+                            },7000)
                         })
-                        restart()
                     }else{
                         toplay.splice(0,1)
                         await newRound(who, esc)
                     }
                 }else{
+                    await originalmsg.delete().catch(err => {})
                     tie(toplay, 'Vel', infos)
                     let who = players.player1.id === full.author.id ? players.player1.type : players.player2.type
+                    for(key of GAME_INFO.players){
+                        console.log(key)
+                        await addMoney(key, 15, client.users.cache.get(key).username)
+                    }
                     await displayDraw(who,esc)
-                    await message.channel.send({
-                        content:`||${mark}||`,
+                    let endmsg = await message.channel.send({
+                        content:'||+15💸 Adicionado em suas contas||',
                         embeds:[
                             drawEmbed(),
-                            await addMoney(toplay[0], 15, client.users.cache.get(toplay[0]).username),
-                            await addMoney(toplay[1], 15, client.users.cache.get(toplay[1]).username)
-                        ], 
+                            ImageEmbed2(attachments.name)
+                        ],
                         files:[attachments] 
                     })
-
-                    restart()
+                    setTimeout(async () => {
+                        await delete_msg(endmsg)
+                        restart()
+                    },7000)
                 }
-            }).catch(collected => {
-                message.channel.send('erro')
-                console.log(collected)
+            }).catch(async collected => {
+                    for(key of GAME_INFO.players){
+                        await addMoney(key, 15, client.users.cache.get(key).username)
+                    }
+                    await originalmsg.delete().catch(err => {})
+                    let addarr = []
+                    addarr.push(toplay[0])
+                    for(key of temp){
+                        if(key !== toplay[0]){
+                            addarr.unshift(key)
+                        }
+                    }
+                    addWinner(addarr, 'Vel', infos)
+                    await message.channel.send({
+                        content:`||+30💸 para você ${await client.users.cache.get(addarr[0]).username} e +15💸 pro derrotado||`,
+                        embeds:[
+                            winnerEmbed(client.users.cache.get(addarr[0]).username+', seu oponente não jogou então você ',rounds),
+                        ]
+                    })
             });
             rounds++
-            console.log(rounds)
         }
         newRound()
     }

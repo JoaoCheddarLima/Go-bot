@@ -20,14 +20,11 @@ this.checkUser = (userid) => {
 this.addGamePoints = async (userid, game, infos) => {
     await this.checkUser(userid)
     let data = JSON.parse(fs.readFileSync(path))
-    let infosNeed = JSON.parse(fs.readFileSync(pathGames))
 
     if(data[userid]["Games"][game] === undefined){
         data[userid]["Games"][game] = {}
     }
-    
-    let infoArray = infosNeed[game].infos
-    for(key of infoArray){
+    for(key in infos){
         data[userid]["Games"][game][key] === undefined ? data[userid]["Games"][game][key] = infos[key] : data[userid]["Games"][game][key] += infos[key]
     }
 

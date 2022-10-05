@@ -60,6 +60,11 @@ Para abrir este projeto você necessita das seguintes ferramentas:
 --> <a href="https://nodejs.org/en/">NodeJS</a>
 
 ## 🗃 Histórico de lançamento
+* 1.6.5 - 05/10/2022
+    * Corrigidos erros na coleta de dados.
+    * Corrigidos erros no jogo da velha e jogos de matematica.
+    * Mudanças nos sistemas do jogo da velha.
+    * Mudança no sistema de salvar dados gerais.
 * 1.6.4 - 04/10/2022
     * Adicionado comando para checar os comandos e seus shortcuts.
     * Adicionado "corretor" para comandos "errados".

@@ -49,7 +49,7 @@ module.exports = async (message,client,execute, res) => {
                 const collector = message.channel.createMessageComponentCollector({ filter, time: 15000, max:1 });
                 
                 collector.on('collect', async i => {
-                    let paid = '✅ Pagamento recebido +15💰'
+                    let paid = `✅ Pagamento recebido ${await client.users.cache.get(message.author.id).username} +15💸`
                     let text = checkupdate(message.author.id) === true? paid : `❌ Disponível novamente em ${dateDif(new Date())}`
                     await i.update({
                         components:[], 

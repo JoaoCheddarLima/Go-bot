@@ -8,13 +8,13 @@ const colors = {
     vermelho:"FF0000"
 }
 
-this.addWinner = (toplay, gameName, infos) => {
-    infos.wins = 1
-    addGamePoints(toplay[0], gameName, infos)
-    infos.wins = 0
-    infos.losses = 1
-    addGamePoints(toplay[1], gameName, infos)
-    infos.losses = 0
+this.addWinner = async (toplay, gameName, infos) => {
+    let won = infos
+    won['wins'] = 1
+    await addGamePoints(toplay[0], gameName, won)
+    won['losses'] = 1
+    won['wins'] = 0
+    await addGamePoints(toplay[1], gameName, won)
 }
 
 this.tie = (toplay, gameName, infos) => {

@@ -48,7 +48,7 @@ module.exports = {
         }
         if(input1){
             try{
-                if(userId === input1.slice(2).slice(0,-1)) return message.channel.send({embeds:[error_embed('ainda não pode jogar sozinho')]}).then(() => message.delete().catch((err) => {console.error(err)}))
+                // if(userId === input1.slice(2).slice(0,-1)) return message.channel.send({embeds:[error_embed('ainda não pode jogar sozinho')]}).then(() => message.delete().catch((err) => {console.error(err)}))
                 if(error == true) return
                 userB = input1.slice(2).slice(0,-1)
                 userB_Name = await client.users.cache.get(userB).username
@@ -208,7 +208,7 @@ module.exports = {
                         await i.editReply({components:[await redButton(config)],embeds: [embed]})
 
                         collector.on('collect', async i => {
-                            userOptions[i.user.id][game_choosed] = false
+                            userOptions[i.user.id][`${game_choosed}`] = false
                             i.reply({embeds:[justAText('Menu desativado', "#FF0000")], ephemeral: true})
                             fs.writeFileSync('./src/reuse/config/userOptions.json', JSON.stringify(userOptions, null,2))
                         })

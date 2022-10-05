@@ -44,7 +44,7 @@ module.exports = async (x,GAME_INFO,client,message) => {
         let new_round = async () => {
             if(players.length === 1){
                 for(key of GAME_INFO.players){
-                    message.channel.send({embeds:[await subMoney(key,15,client.users.cache.get(key).username)]})
+                    await subMoney(key,15,client.users.cache.get(key).username)
                     prize+=15
                 }
                 return await message.channel.send({embeds:[russaEnd(client.users.cache.get(players[0]).username, prize)]})
