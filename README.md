@@ -1,4 +1,4 @@
-# GO!BOT
+# GO!BOT -> [Go project website](https://jvrl18.github.io/Go-ws/public/home.html)
 
 ## Colaboradores: <a href="https://www.linkedin.com/in/joao-vitor-ribeiro-de-lima-dev/">João Vitor Ribeiro</a>
 
@@ -104,22 +104,25 @@ Para abrir este projeto você necessita das seguintes ferramentas:
 # 📌 Comandos existentes
 <ul>
   <li>
-    g!jogar  ---> abre o menu de jogos 🔸
+    g!jogar  ---> Abre o menu de jogos 🔸
   </li>
   <li>
-    g!perfil ---> mostra seus dados de economia e jogos 🔸
+    g!perfil ---> Mostra seus dados de economia e jogos 🔸
   </li>
   <li>
     g!guia   ---> Ativa/desativa os textos de guia para o jogo especificado 🔸
   </li>
   <li>
-    g!daily  ---> recebe o valor fixo de moedas de ouro por dia 🔸
+    g!daily  ---> Recebe o valor fixo de moedas de ouro por dia 🔸
   </li>
   <li>
-    g!ajuda  ---> mostra a versão atual e prefixo🔸
+    g!ajuda  ---> Mostra a versão atual e prefixo🔸
   </li>
   <li>
-    g!reg    ---> registra o canal permitindo o uso de g!jogar 🔸
+    g!reg    ---> Registra o canal permitindo o uso de g!jogar 🔸
+  </li>
+  <li>
+    g!comandos ---> Mostra todos os comandos registrado na pasta comandos 🔸
   </li>
 </ul>
 
