@@ -1,4 +1,4 @@
-# GO!BOT -> [Go project website](https://jvrl18.github.io/Go-ws/public/home.html)
+# GO!BOT [[Website](https://jvrl18.github.io/Go-ws/public/home.html)] <br>[![Project time spent by wakatime](https://wakatime.com/badge/user/c7a5e8d6-0c47-451a-affe-b7735e691e04/project/69b774b3-430c-43b9-a906-97d49804ef89.svg?style=for-the-badge)](https://wakatime.com/badge/user/c7a5e8d6-0c47-451a-affe-b7735e691e04/project/69b774b3-430c-43b9-a906-97d49804ef89)
 
 ## Colaboradores: <a href="https://www.linkedin.com/in/joao-vitor-ribeiro-de-lima-dev/">João Vitor Ribeiro</a>
 
